@@ -1,0 +1,31 @@
+.page-header {
+    margin-top: 200px;
+    -webkit-transition: margin-top 0.25s ease-out;
+    -moz-transition: margin-top 0.25s ease-out;
+    -o-transition: margin-top 0.25s ease-out;
+    transition: margin-top 0.25s ease-out;
+}
+
+#issues-page {
+    display: none;
+}
+
+.issue-labels {
+    line-height: 1.5em;
+}
+
+.issue-label {
+    line-height: 1em;
+    display: inline-block;
+    font-size: 0.9em;
+    font-weight: bold;
+    color: white;
+    border-radius: 3px;
+    padding: 3px;
+}
+
+img.assignee {
+    width: 32px;
+    height: 32px;
+    margin-right: 5px;
+}

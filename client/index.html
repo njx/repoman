@@ -1,0 +1,81 @@
+<!doctype html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+        <title>repoman</title>
+        
+        <link href="http://twitter.github.com/bootstrap/1.4.0/bootstrap.min.css" rel="stylesheet" type="text/css">
+        <link href="styles.css" rel="stylesheet" type="text/css">
+        
+        <script src="lib/jquery-1.7.1.min.js" type="text/javascript"></script>
+        <script src="lib/base64.js" type="text/javascript"></script>
+        <script src="lib/handlebars-1.0.0.beta.6.js" type="text/javascript"></script>
+        <script src="lib/underscore-min.js" type="text/javascript"></script>
+        <script src="lib/backbone-min.js" type="text/javascript"></script>
+        
+        <script src="GithubService.js" type="text/javascript"></script>
+        <script src="Models.js" type="text/javascript"></script>
+        <script src="repoman.js" type="text/javascript"></script>
+    </head>
+
+    <body>
+        <div class="container">
+            <div class="page-header">
+                <h1>repoman</h1>
+            </div>
+            <div id="login-page">
+                <form id="login-form">
+                    <fieldset>
+                        <div class="clearfix">
+                            <label for="login-username">Username</label>
+                            <div class="input">
+                                <input class="xlarge" id="login-username" name="login-username" size="30" type="text">
+                            </div>
+                        </div>
+                        <div class="clearfix">
+                            <label for="login-password">Password</label>
+                            <div class="input">
+                                <input class="xlarge" id="login-password" name="login-password" size="30" type="password">
+                            </div>
+                        </div>
+                        <div class="actions">
+                            <input type="submit" class="btn primary" value="Login">
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+            
+            <div id="issues-page"/>
+        </div>
+        
+        <script id="t-issues-summary" type="text/x-handlebars-template">
+            <h2>{{repo}}</h2>
+            <table class="zebra-striped">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Title</th>
+                        <th>Assignee</th>
+                        <th>Milestone</th>
+                        <th>Labels</th>    
+                    </tr>
+                </thead>
+                <tbody>
+                {{#each issues}}
+                    <tr>
+                        <td>{{number}}</td>
+                        <td width="400">{{title}}</td>
+                        <td><img class="assignee" src="{{assignee.avatar_url}}"></td>
+                        <td>{{milestone.title}}</td>
+                        <td class="issue-labels">
+                        {{#each labels}}
+                            <div class="issue-label" style="background-color: #{{color}}">{{name}}</div>
+                        {{/each}}
+                        </td>
+                    </tr>
+                {{/each}}
+                </tbody>
+            </table>
+        </script>
+    </body>
+</html>

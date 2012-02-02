@@ -1,5 +1,5 @@
 /*jslint vars: true, plusplus: true, devel: true, browser: true, nomen: true, indent: 4, maxerr: 50 */
-/*global define: false, $: false, base64: false */
+/*global $: false, base64: false */
 
 var GithubService = (function () {
     'use strict';
@@ -23,11 +23,10 @@ var GithubService = (function () {
     function sendRequest(path, settings) {
         settings = settings || {};
         settings.beforeSend = function (xhr) {
-            // TODO: this doesn't actually work, because JSONP doesn't send headers.
             xhr.setRequestHeader("Authorization", "Basic " + base64.encode(_username + ":" + _password));
         };
-        settings.dataType = "jsonp";
-        return $.ajax("https://api.github.com" + path, settings);
+        settings.dataType = "json";
+        return $.ajax("https://localhost:8080/api" + path, settings);
     }
     
     function sendIssueRequest(user, repo, params) {
