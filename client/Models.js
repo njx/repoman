@@ -6,6 +6,9 @@ var Models = (function () {
 
     var exports = {};
     
+    // TODO: is there any real value to using Backbone models here, given that
+    // they're static once loaded?
+    
     var Repo = Backbone.Model.extend({
         // Attributes: user, repo
         

@@ -9,6 +9,8 @@ $(document).ready(function () {
     var issues = new Models.Issues();
     
     function refreshIssues() {
+        // TODO: instead of waiting for everything to load, add headings immediately with
+        // spinners, then fill as data comes in
         var promises = [];
         repos.each(function (repo) {
             promises.push(repo.fetchIssues());
@@ -38,8 +40,8 @@ $(document).ready(function () {
             
             GithubService.setUserInfo($("#login-username").val(), $("#login-password").val());
             $(".page-header").css("margin-top", "10px");
-            $("#login-page").hide(250);
-            $("#issues-page").show(250);
+            $("#login-page").fadeOut(250);
+            $("#issues-page").fadeIn(250);
             refreshIssues();
         });
         

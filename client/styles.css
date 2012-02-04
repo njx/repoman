@@ -29,3 +29,34 @@ img.assignee {
     height: 32px;
     margin-right: 5px;
 }
+
+.query {
+    border: 1px solid #ccc;
+    font: 10px sans-serif;
+}
+
+.query-punctuation {
+    display: inline-block;
+}
+
+.query-leaf {
+    display: inline-block;
+}
+
+.query-leaf-label {
+    color: #999;
+}
+
+.query-leaf-value {
+    border-radius: 3px;
+    padding: 2px;
+    font-weight: bold;
+}
+.query-leaf-value.complete {
+    border: 1px solid #ccc;
+    background: #ccc;
+}
+.query-leaf-value.incomplete {
+    border: 1px dotted #ccc;
+}
+
