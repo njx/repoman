@@ -1,13 +1,19 @@
 /*jslint vars: true, plusplus: true, devel: true, browser: true, nomen: true, indent: 4, maxerr: 50 */
-/*global Backbone: false */
+/*global Backbone: false, _: false, $: false, GithubService: false */
 
 var Models = (function () {
-    'use strict';
+    "use strict";
 
     var exports = {};
     
     // TODO: is there any real value to using Backbone models here, given that
     // they're static once loaded?
+    
+    var Issue = Backbone.Model.extend({});
+    
+    var Issues = Backbone.Collection.extend({
+        model: Issue
+    });
     
     var Repo = Backbone.Model.extend({
         // Attributes: user, repo
@@ -36,12 +42,6 @@ var Models = (function () {
     
     var Repos = Backbone.Collection.extend({
         model: Repo
-    });
-    
-    var Issue = Backbone.Model.extend({});
-    
-    var Issues = Backbone.Collection.extend({
-        model: Issue
     });
     
     exports.Repo = Repo;

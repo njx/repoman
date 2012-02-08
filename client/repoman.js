@@ -2,11 +2,11 @@
 /*global $: false, _: false, Handlebars: false, GithubService: false, Models: false */
 
 $(document).ready(function () {
-    'use strict';
+    "use strict";
     
     var issuesTemplate = Handlebars.compile($("#t-issues-summary").html());
     var repos = new Models.Repos();
-    var issues = new Models.Issues();
+//    var issues = new Models.Issues();
     
     function refreshIssues() {
         // TODO: instead of waiting for everything to load, add headings immediately with

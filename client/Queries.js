@@ -1,64 +1,59 @@
 /*jslint vars: true, plusplus: true, devel: true, browser: true, nomen: true, indent: 4, maxerr: 50 */
 /*global Backbone: false, _: false, Handlebars: false, $: false */
 
-var _sampleQuery = {
-    type: "and",
-    children: [
-        {
-            type: "is",
-            property: "assignee.user",
-            value: "peterflynn"
-        },
-        {
-            type: "is",
-            property: "status",
-            value: "open"
-        },
-        {
-            negated: true,
-            type: "contains",
-            property: "labels",
-            matchProperty: "name",
-            value: "fixed but not closed"
-        },
-        {
-            type: "incomplete",
-            value: "spr"
-        }
-    ]
-};
+// TODO: add way to do textual (regexp?) search within a value
 
 var Queries = (function () {
     "use strict";
     
     var exports = {};
+    
+    function getPropertyPath(modelOrObject, propertyPath) {
+        var properties = propertyPath.split("."),
+            curObject = modelOrObject;
+        properties.forEach(function (property) {
+            if (curObject instanceof Backbone.Model) {
+                curObject = curObject.get(property);
+            } else {
+                curObject = curObject[property];
+            }
+        });
+        return curObject;
+    }
+    
+    function valueMatches(actual, desired, isRegexp) {
+        return isRegexp ? new RegExp(desired).test(actual) : actual === desired;
+    }
 
     function queryMatches(query, issue) {
         var result = false;
         
+        // TODO: handle dot path for property
         switch (query.type) {
         case "and":
-            result = _.every(query.children, function (queryChild) {
-                queryMatches(queryChild, issue);
+            result = query.get("children").all(function (queryChild) {
+                return queryMatches(queryChild, issue);
             });
             break;
         case "or":
-            result = _.some(query.children, function (queryChild) {
-                queryMatches(queryChild, issue);
+            result = query.get("children").all(function (queryChild) {
+                return queryMatches(queryChild, issue);
             });
             break;
         case "is":
-            result = (issue.get(query.property) === query.value);
+            result = valueMatches(getPropertyPath(issue, query.get("property")),
+                                  query.get("value"), query.get("isRegexp"));
             break;
         case "contains":
-            var value = issue.get(query.property);
+            var value = getPropertyPath(issue, query.get("property"));
             result = value && _.some(value, function (item) {
-                return item[query.matchProperty] === query.value;
+                return valueMatches(getPropertyPath(item, query.get("matchProperty")),
+                                    query.get("value"), query.get("isRegexp"));
             });
             break;
         }
         
-        if (query.negated) {
+        if (query.get("negated")) {
             result = !result;
         }
         return result;
@@ -68,30 +63,7 @@ var Queries = (function () {
         // Attributes: query
         
         matches: function (issue) {
-            return queryMatches(this.get("query"), issue);
-        }
-    });
-    
-    var QueryView = Backbone.View.extend({
-        className: "query",
-        
-        render: function () {
-            this.$el.empty();
-            this.renderQuery(this.model.get("query"));
-            return this;
-        },
-        
-        renderQuery: function (query) {
-            switch (query.type) {
-                case "and":
-                case "or":
-                    
-                    break;
-                case "is":
-                    break;
-                case "contains":
-                    break;
-            }
+            return queryMatches(this, issue);
         }
     });
     
@@ -102,6 +74,33 @@ var Queries = (function () {
             // ***
             
             return this;
+        }
+    });
+    
+    var QueryView = Backbone.View.extend({
+        className: "query",
+        
+        render: function () {
+            this.$el.empty();
+            this.renderQuery(this.model);
+            return this;
+        },
+        
+        renderQuery: function (query) {
+            switch (query.get("type")) {
+            case "and":
+            case "or":
+                // TODO: ***
+                break;
+
+            case "is":
+            case "contains":
+                this.$el.append(new QueryLeafView({model: query}));
+                break;
+            case "incomplete":
+                // TODO: ***
+                break;
+            }
         }
     });
     
