@@ -4,7 +4,7 @@
         <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
         <title>repoman</title>
         
-        <link href="http://twitter.github.com/bootstrap/1.4.0/bootstrap.min.css" rel="stylesheet" type="text/css">
+        <link href="lib/bootstrap.min.css" rel="stylesheet" type="text/css">
         <link href="styles.css" rel="stylesheet" type="text/css">
         
         <script src="lib/jquery-1.7.1.min.js" type="text/javascript"></script>
@@ -12,10 +12,12 @@
         <script src="lib/handlebars-1.0.0.beta.6.js" type="text/javascript"></script>
         <script src="lib/underscore-min.js" type="text/javascript"></script>
         <script src="lib/backbone-min.js" type="text/javascript"></script>
+        <script src="lib/spin.js" type="text/javascript"></script>
         
         <script src="GithubService.js" type="text/javascript"></script>
         <script src="Models.js" type="text/javascript"></script>
         <script src="Queries.js" type="text/javascript"></script>
+        <script src="Suggestions.js" type="text/javascript"></script>
         <script src="repoman.js" type="text/javascript"></script>
     </head>
 
@@ -46,11 +48,19 @@
                 </form>
             </div>
             
-            <div id="issues-page"/>
+            <div id="issues-page">
+                <div id="query-view"></div>
+                <div id="issues-container"></div>
+            </div>
+            
+            <div id="spinner"></div>
         </div>
         
         <script id="t-issues-summary" type="text/x-handlebars-template">
-            <h2>{{repo}}</h2>
+            <div class="issues-head clearfix">
+                <p class="num-issues">{{numIssues}}</p>
+                <h2 class="repo">{{repo}}</h2>
+            </div>
             <table class="zebra-striped">
                 <thead>
                     <tr>
@@ -65,7 +75,7 @@
                     {{#each issues}}
                         <tr>
                             <td>{{number}}</td>
-                            <td width="400">{{title}}</td>
+                            <td width="400"><a href="{{html_url}}">{{title}}</a></td>
                             <td><img class="assignee" src="{{assignee.avatar_url}}"></td>
                             <td>{{milestone.title}}</td>
                             <td class="issue-labels">
@@ -82,7 +92,7 @@
         <script id="t-query-leaf" type="text/x-handlebars-template">
             <div class="query-leaf">
                 <div class="query-leaf-label">{{label}}</div>
-                <div class="query-leaf-value">{{value}}</div>
+                <div class="query-leaf-value complete">{{value}}</div>
             </div>
         </script>
     </body>

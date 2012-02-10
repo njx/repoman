@@ -53,117 +53,103 @@
     
     test("simple property query", function () {
         var query = new Queries.Query({
-            query: {
-                type: "is",
-                property: "state",
-                value: "open"
-            }
+            type: "is",
+            property: "state",
+            value: "open"
         });
         ok(query.matches(issue), "state == open matches");
     });
     
     test("negated query", function () {
         var query = new Queries.Query({
-            query: {
-                negated: true,
-                type: "is",
-                property: "state",
-                value: "open"
-            }
+            negated: true,
+            type: "is",
+            property: "state",
+            value: "open"
         });
         ok(!query.matches(issue), "state != open does not match");
         
-        query.get("query").value = "closed";
+        query.set("value", "closed");
         ok(query.matches(issue), "state != closed does match");
     });
     
     test("dot property query", function () {
         var query = new Queries.Query({
-            query: {
-                type: "is",
-                property: "user.login",
-                value: "johndoe"
-            }
+            type: "is",
+            property: "user.login",
+            value: "johndoe"
         });
         ok(query.matches(issue), "user.login == johndoe matches");
     });
     
     test("and query", function () {
         var query = new Queries.Query({
-            query: {
-                type: "and",
-                children: [
-                    {
-                        type: "is",
-                        property: "state",
-                        value: "open"
-                    },
-                    {
-                        type: "is",
-                        property: "user.login",
-                        value: "johndoe"
-                    }
-                ]
-            }
+            type: "and",
+            children: new Queries.Queries([
+                new Queries.Query({
+                    type: "is",
+                    property: "state",
+                    value: "open"
+                }),
+                new Queries.Query({
+                    type: "is",
+                    property: "user.login",
+                    value: "johndoe"
+                })
+            ])
         });
         ok(query.matches(issue), "state == open && user.login == johndoe");
         
-        query.get("query").children[1].negated = true;
-        query.get("query").children[1].value = "janesmith";
+        query.get("children").at(1).set("negated", true);
+        query.get("children").at(1).set("value", "janesmith");
         ok(query.matches(issue), "state == open && user.login != janesmith");
     });
     
     test("or query", function () {
         var query = new Queries.Query({
-            query: {
-                type: "or",
-                children: [
-                    {
-                        type: "is",
-                        property: "state",
-                        value: "open"
-                    },
-                    {
-                        type: "is",
-                        property: "user.login",
-                        value: "janesmith"
-                    }
-                ]
-            }
+            type: "or",
+            children: new Queries.Queries([
+                new Queries.Query({
+                    type: "is",
+                    property: "state",
+                    value: "open"
+                }),
+                new Queries.Query({
+                    type: "is",
+                    property: "user.login",
+                    value: "janesmith"
+                })
+            ])
         });
         ok(query.matches(issue), "state == open || user.login == janesmith");
         
-        query.get("query").children[0].value = "closed";
+        query.get("children").at(0).set("value", "closed");
         ok(!query.matches(issue), "state == closed || user.login == janesmith does not match");
     });
     
     test("contains query", function () {
         var query = new Queries.Query({
-            query: {
-                type: "contains",
-                property: "labels",
-                matchProperty: "name",
-                value: "medium priority"
-            }
+            type: "contains",
+            property: "labels",
+            matchProperty: "name",
+            value: "medium priority"
         });
         ok(query.matches(issue), "contains label with name == medium priority");
         
-        query.get("query").value = "high priority";
+        query.set("value", "high priority");
         ok(!query.matches(issue), "does not contain label with name == high priority");
     });
     
     test("regexp query", function () {
         var query = new Queries.Query({
-            query: {
-                type: "is",
-                property: "body",
-                value: "containing.*file",
-                isRegexp: true
-            }
+            type: "is",
+            property: "body",
+            value: "containing.*file",
+            isRegexp: true
         });
         ok(query.matches(issue), "body matches containing.*file");
         
-        query.get("query").value = "argle.*bargle";
+        query.set("value", "argle.*bargle");
         ok(!query.matches(issue), "body does not match argle.*bargle");
     });
     

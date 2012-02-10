@@ -1,3 +1,35 @@
+/*-----------------------*
+ *------ Utilities ------*
+ *-----------------------*/
+
+.clearfix:after {
+    content: ".";
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden;
+}
+
+/*-----------------------*
+ *--- Page structure ----*
+ *-----------------------*/
+
+html, body {
+    background: #ccc;
+    height: 100%;
+}
+
+.container {
+    background: #fff;
+    padding: 20px;
+    min-height: 100%;
+    
+    -moz-box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.2);
+    -webkit-box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.2);
+    -o-box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.2);
+    box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.2);
+}
+
 .page-header {
     margin-top: 200px;
     -webkit-transition: margin-top 0.25s ease-out;
@@ -5,6 +37,24 @@
     -o-transition: margin-top 0.25s ease-out;
     transition: margin-top 0.25s ease-out;
 }
+
+#spinner {
+    display: none;
+    width: 48px;
+    height: 48px;
+    padding: 8px;
+    background-color: rgba(0, 0, 0, 0.8);
+    border-radius: 8px;
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    margin-left: -32px;
+    margin-top: -32px;
+}
+
+/*-----------------------*
+ *------- Issues --------*
+ *-----------------------*/
 
 #issues-page {
     display: none;
@@ -24,15 +74,57 @@
     padding: 3px;
 }
 
+.issues-head {
+    background-color: #000;
+    background-image: -webkit-linear-gradient(top, #999, #666);
+    margin-top: 20px;
+    margin-bottom: 0;
+}
+
+.repo {
+    float: left;
+    color: #fff;
+    text-shadow: #000 0 -1px 0;
+    margin: 10px;
+}
+
+.num-issues {
+    float: left;
+    font-weight: bold;
+    font-size: 14px;
+    color: #fff;
+    background-image: -webkit-linear-gradient(top, #f99, #c00);
+    border: 3px solid #fff;
+    border-radius: 30px;
+    text-align: center;
+    min-width: 17px;
+    padding: 3px;
+    margin: 13px 0 13px 10px;
+}
+
+table {
+    border: 1px solid #DDD;
+}
+
 img.assignee {
     width: 32px;
     height: 32px;
     margin-right: 5px;
 }
 
+/*-----------------------*
+ *------- Queries -------*
+ *-----------------------*/
+
+#query-view {
+    border: 1px solid #ddd;
+    margin-top: -18px;
+}
+
 .query {
-    border: 1px solid #ccc;
-    font: 10px sans-serif;
+    display: inline-block;
+    font-size: 14px;
+    padding: 5px;
 }
 
 .query-punctuation {

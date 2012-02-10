@@ -1,29 +1,63 @@
 /*jslint vars: true, plusplus: true, devel: true, browser: true, nomen: true, indent: 4, maxerr: 50 */
-/*global $: false, _: false, Handlebars: false, GithubService: false, Models: false */
+/*global $: false, _: false, Spinner: false, Handlebars: false, GithubService: false, Models: false, Queries: false */
 
 $(document).ready(function () {
     "use strict";
     
     var issuesTemplate = Handlebars.compile($("#t-issues-summary").html());
     var repos = new Models.Repos();
-//    var issues = new Models.Issues();
+//    var query = new Queries.Query({
+//        type: "is",
+//        property: "state",
+//        value: "open"
+//    });
+    var query = new Queries.Query({
+        type: "and",
+        children: new Queries.Queries([
+            new Queries.Query({
+                type: "is",
+                property: "state",
+                value: "open"
+            }),
+            new Queries.Query({
+                type: "contains",
+                property: "labels",
+                matchProperty: "name",
+                value: "medium priority"
+            })
+        ])
+    });
     
+
     function refreshIssues() {
         // TODO: instead of waiting for everything to load, add headings immediately with
         // spinners, then fill as data comes in
+        $("#spinner").show();
+        var spinner = new Spinner({color: "#fff", width: 4}).spin($("#spinner").get(0));
         var promises = [];
         repos.each(function (repo) {
             promises.push(repo.fetchIssues());
         });
         $.when.apply(window, promises).then(function () {
-            $("#issues-page").empty();
+            spinner.stop();
+            $("#spinner").hide();
+            $("#issues-container").empty();
             var results = Array.prototype.slice.call(arguments);
             repos.each(function (repo) {
                 var foundResult = _.find(results, function (result) { return result.repo === repo; });
-                $("#issues-page").append(issuesTemplate(
+                var issues = [];
+                if (foundResult) {
+                    issues = foundResult.issues.filter(
+                        function (issue) {
+                            return (query ? query.matches(issue) : true);
+                        }
+                    );
+                }
+                $("#issues-container").append(issuesTemplate(
                     {
                         repo: repo.getFullName(),
-                        issues: (foundResult ? foundResult.issues.toJSON() : [])
+                        issues: _.map(issues, function (issue) { return issue.toJSON(); }),
+                        numIssues: issues.length
                     }
                 ));
             });
@@ -42,10 +76,16 @@ $(document).ready(function () {
             $(".page-header").css("margin-top", "10px");
             $("#login-page").fadeOut(250);
             $("#issues-page").fadeIn(250);
-            refreshIssues();
-        });
+
+            $("#query-view").append(new Queries.QueryView({model: query}).render().el);
+            query.on("all", function () {
+                refreshIssues();
+            });
         
-        repos.on("all", function () {
+            repos.on("all", function () {
+                refreshIssues();
+            });
+            
             refreshIssues();
         });
         
