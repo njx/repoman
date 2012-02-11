@@ -18,6 +18,7 @@
         <script src="Models.js" type="text/javascript"></script>
         <script src="Queries.js" type="text/javascript"></script>
         <script src="Suggestions.js" type="text/javascript"></script>
+
         <script src="repoman.js" type="text/javascript"></script>
     </head>
 
@@ -59,7 +60,7 @@
         <script id="t-issues-summary" type="text/x-handlebars-template">
             <div class="issues-head clearfix">
                 <p class="num-issues">{{numIssues}}</p>
-                <h2 class="repo">{{repo}}</h2>
+                <h3 class="repo">{{repo}}</h3>
             </div>
             <table class="zebra-striped">
                 <thead>
@@ -92,8 +93,11 @@
         <script id="t-query-leaf" type="text/x-handlebars-template">
             <div class="query-leaf">
                 <div class="query-leaf-label">{{label}}</div>
-                <div class="query-leaf-value complete">{{value}}</div>
+                <div class="query-leaf-value complete">
+                    <div class="query-delete"></div>
+                    <div class="query-value">{{value}}</div>
+                </div>
             </div>
         </script>
-    </body>
+</body>
 </html>

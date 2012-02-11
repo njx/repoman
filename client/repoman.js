@@ -73,9 +73,12 @@ $(document).ready(function () {
             event.preventDefault();
             
             GithubService.setUserInfo($("#login-username").val(), $("#login-password").val());
-            $(".page-header").css("margin-top", "10px");
-            $("#login-page").fadeOut(250);
-            $("#issues-page").fadeIn(250);
+            $(".container").css({
+                "margin-top": "10px",
+                "min-height": "100%"
+            });
+            $("#login-page").hide();
+            $("#issues-page").show();
 
             $("#query-view").append(new Queries.QueryView({model: query}).render().el);
             query.on("all", function () {
