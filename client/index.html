@@ -75,10 +75,10 @@
                 <tbody>
                     {{#each issues}}
                         <tr>
-                            <td>{{number}}</td>
+                            <td width="50">{{number}}</td>
                             <td width="400"><a href="{{html_url}}">{{title}}</a></td>
-                            <td><img class="assignee" src="{{assignee.avatar_url}}"></td>
-                            <td>{{milestone.title}}</td>
+                            <td width="60"><img class="assignee" src="{{assignee.avatar_url}}"></td>
+                            <td width="80">{{milestone.title}}</td>
                             <td class="issue-labels">
                                 {{#each labels}}
                                     <div class="issue-label" style="background-color: #{{color}}">{{name}}</div>
@@ -91,9 +91,9 @@
         </script>
         
         <script id="t-query-leaf" type="text/x-handlebars-template">
-            <div class="query-leaf">
+            <div class="query-leaf {{completeness}}">
                 <div class="query-leaf-label">{{label}}</div>
-                <div class="query-leaf-value complete">
+                <div class="query-leaf-value">
                     <div class="query-delete"></div>
                     <div class="query-value">{{value}}</div>
                 </div>

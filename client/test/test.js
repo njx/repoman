@@ -153,6 +153,39 @@
         ok(!query.matches(issue), "body does not match argle.*bargle");
     });
     
+    test("dot query against null field", function () {
+        var query = new Queries.Query({
+            type: "is",
+            property: "assignee.login",
+            value: "johndoe"
+        });
+        ok(!query.matches(issue), "property path for null field does not match");
+    });
+    
+    test("incomplete query items", function () {
+        var query = new Queries.Query({
+            type: "incomplete",
+            value: "joh"
+        });
+        ok(query.matches(issue), "incomplete query matches anything");
+        
+        query = new Queries.Query({
+            type: "and",
+            children: new Queries.Queries([
+                new Queries.Query({
+                    type: "is",
+                    property: "state",
+                    value: "open"
+                }),
+                new Queries.Query({
+                    type: "incomplete",
+                    value: "joh"
+                })
+            ])
+        });
+        ok(query.matches(issue), "incomplete query in 'and' query doesn't break it");
+    });
+    
     /*
     var sampleQuery = {
         type: "and",

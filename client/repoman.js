@@ -20,15 +20,12 @@ $(document).ready(function () {
                 value: "open"
             }),
             new Queries.Query({
-                type: "contains",
-                property: "labels",
-                matchProperty: "name",
-                value: "medium priority"
+                type: "incomplete"
             })
         ])
     });
     
-
+    // TODO: factor into IssuesView module
     function refreshIssues() {
         // TODO: instead of waiting for everything to load, add headings immediately with
         // spinners, then fill as data comes in
@@ -53,13 +50,15 @@ $(document).ready(function () {
                         }
                     );
                 }
-                $("#issues-container").append(issuesTemplate(
-                    {
-                        repo: repo.getFullName(),
-                        issues: _.map(issues, function (issue) { return issue.toJSON(); }),
-                        numIssues: issues.length
-                    }
-                ));
+                if (issues.length > 0) {
+                    $("#issues-container").append(issuesTemplate(
+                        {
+                            repo: repo.getFullName(),
+                            issues: _.map(issues, function (issue) { return issue.toJSON(); }),
+                            numIssues: issues.length
+                        }
+                    ));
+                }
             });
         });
     }

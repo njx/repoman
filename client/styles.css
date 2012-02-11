@@ -124,10 +124,11 @@ img.assignee {
 
 #query-view {
     border: 1px solid #ddd;
+    background: #f8f8f8;
     margin-top: -18px;
-    -webkit-box-shadow: 0px 0px 6px 0px rgba(0, 0, 0, 0.2) inset;
-    -moz-box-shadow: 0px 0px 6px 0px rgba(0, 0, 0, 0.2) inset;
-    box-shadow: 0px 0px 6px 0px rgba(0, 0, 0, 0.2) inset;
+    -webkit-box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.2) inset;
+    -moz-box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.2) inset;
+    box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.2) inset;
 }
 
 .query {
@@ -139,6 +140,7 @@ img.assignee {
 
 .query-punctuation {
     display: inline-block;
+    color: #999;
 }
 
 .query-leaf {
@@ -147,19 +149,20 @@ img.assignee {
 
 .query-leaf-label {
     color: #999;
+    height: 20px;
 }
 
 .query-leaf-value {
     border-radius: 3px;
-    padding: 3px;
+    padding: 6px;
     font-weight: bold;
-}
-.query-leaf-value.complete {
-    border: 1px solid #ccc;
+    vertical-align: middle;
     background: #ccc;
 }
-.query-leaf-value.incomplete {
-    border: 1px dotted #ccc;
+.query-leaf-value input {
+    font-size: 14px;
+    font-weight: bold;
+    width: 150px;
 }
 
 .query-delete {

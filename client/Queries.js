@@ -24,17 +24,19 @@ var Queries = (function () {
             var properties = propertyPath.split("."),
                 curObject = modelOrObject;
             properties.forEach(function (property) {
-                if (curObject instanceof Backbone.Model) {
-                    curObject = curObject.get(property);
-                } else {
-                    curObject = curObject[property];
+                if (curObject) {
+                    if (curObject instanceof Backbone.Model) {
+                        curObject = curObject.get(property);
+                    } else {
+                        curObject = curObject[property];
+                    }
                 }
             });
             return curObject;
         },
     
         valueMatches: function (actual, desired, isRegexp) {
-            return isRegexp ? new RegExp(desired).test(actual) : actual === desired;
+            return (actual !== null && isRegexp) ? new RegExp(desired).test(actual) : actual === desired;
         },
 
         queryMatches: function (query, issue) {
@@ -68,6 +70,9 @@ var Queries = (function () {
                     );
                 });
                 break;
+            case "incomplete":
+                result = true;
+                break;
             }
             
             if (query.get("negated")) {
@@ -81,11 +86,14 @@ var Queries = (function () {
         },
         
         getLabel: function () {
+            if (this.get("type") === "incomplete") {
+                return "";
+            }
             return this.get("property") + " " + this.get("type");
         },
         
         getValue: function () {
-            return this.get("value");
+            return this.get("value") || "";
         }
     });
     
@@ -96,7 +104,7 @@ var Queries = (function () {
     var QueryLeafView = Backbone.View.extend({
         events: {
             "click .query-delete": "deleteModel",
-            "click": "editLabel",
+            "click .query-leaf-value": "editValue",
             "keypress input": "maybeCommit"
         },
         
@@ -109,10 +117,15 @@ var Queries = (function () {
         render: function () {
             this.$el.html(
                 this.template({
-                    label: this.model.getLabel(),
-                    value: this.model.getValue()
+                    label: this.model.get("type") === "incomplete" ? "" : this.model.getLabel(),
+                    value: this.model.getValue(),
+                    completeness: this.model.get("type") === "incomplete" ? "incomplete" : "complete"
                 })
             );
+            if (this.model.get("type") === "incomplete") {
+                // TODO: this doesn't set focus if we aren't in the DOM yet, as on first render
+                this.editValue();
+            }
             return this;
         },
         
@@ -120,23 +133,40 @@ var Queries = (function () {
             this.model.destroy();
         },
         
-        editLabel: function () {
-            if (this.mode != "edit") {
+        editValue: function () {
+            if (this.mode !== "edit") {
                 this.mode = "edit";
-                this.editor = $(this.make("input", { 
-                    "type": "text", 
+                this.editor = $(this.make("input", {
+                    "type": "text",
                     "value": this.model.getValue()
                 }));
                 this.$(".query-value").empty().append(this.editor);
+                this.editor.focus().select();
             }
         },
         
         commitEdit: function () {
-            if (this.mode == "edit") {
-                this.model.set("value", this.editor.val());
-                this.editor = null;
-                this.$(".query-value").text(this.model.getValue());
+            if (this.mode === "edit") {
+                var parts = this.editor.val().split("==");
+                parts.forEach(function (value, index) {
+                    parts[index] = value.trim();
+                });
+                if (parts.length === 2) {
+                    // TODO: generalize these hardcoded heuristics somehow
+                    if (parts[0] === "label") {
+                        parts[0] = "labels";
+                    }
+                    this.model.set("type", (parts[0] === "labels" ? "contains" : "is"));
+                    this.model.set("property", parts[0]);
+                    if (parts[0] === "labels") {
+                        this.model.set("matchProperty", "name");
+                    }
+                    this.model.set("value", parts[1]);
+                } else {
+                    this.model.set("value", parts[0]);
+                }
                 this.mode = "view";
+                this.render();
             }
         },
         
@@ -184,11 +214,8 @@ var Queries = (function () {
 
             case "is":
             case "contains":
-                this.$el.append(new QueryLeafView({model: query}).render().el);
-                break;
-                    
             case "incomplete":
-                // TODO: ***
+                this.$el.append(new QueryLeafView({model: query}).render().el);
                 break;
             }
         }
