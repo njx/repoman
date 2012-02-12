@@ -145,7 +145,7 @@
             type: "is",
             property: "body",
             value: "containing.*file",
-            isRegexp: true
+            matchType: "regexp"
         });
         ok(query.matches(issue), "body matches containing.*file");
         
@@ -186,6 +186,19 @@
         ok(query.matches(issue), "incomplete query in 'and' query doesn't break it");
     });
     
+    test("substring match", function () {
+        var query = new Queries.Query({
+            type: "is",
+            property: "body",
+            value: "containing",
+            matchType: "substring"
+        });
+        ok(query.matches(issue), "body matches substring containing");
+        
+        query.set("matchType", "exact");
+        ok(!query.matches(issue), "body does not exactly match containing");
+    });
+    
     /*
     var sampleQuery = {
         type: "and",
@@ -211,7 +224,7 @@
                 type: "is",
                 property: "body",
                 value: "containing.*file",
-                isRegexp: true
+                matchType: "regexp"
             }
         ]
     };

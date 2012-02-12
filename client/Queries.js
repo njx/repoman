@@ -6,6 +6,25 @@ var Queries = (function () {
     
     var exports = {};
     
+    // We use this to make sure that focus gets set properly once query views have been created.
+    var FocusManager = (function () {
+        var currentFocus = null;
+        
+        var refreshFocus = function () {
+            currentFocus.focus().select();
+        };
+            
+        var setFocus = function (editor) {
+            currentFocus = editor;
+            refreshFocus();
+        };
+        
+        return {
+            refreshFocus: refreshFocus,
+            setFocus: setFocus
+        };
+    }());
+    
     var Query = Backbone.Model.extend({
         initialize: function () {
             this.bindChildrenEvent();
@@ -35,8 +54,18 @@ var Queries = (function () {
             return curObject;
         },
     
-        valueMatches: function (actual, desired, isRegexp) {
-            return (actual !== null && isRegexp) ? new RegExp(desired).test(actual) : actual === desired;
+        valueMatches: function (actual, desired, matchType) {
+            if (actual === null) {
+                return actual === desired;
+            } else {
+                if (matchType === "regexp") {
+                    return new RegExp(desired).test(actual);
+                } else if (matchType === "substring") {
+                    return actual.indexOf(desired) !== -1;
+                } else {
+                    return actual === desired;
+                }
+            }
         },
 
         queryMatches: function (query, issue) {
@@ -57,7 +86,7 @@ var Queries = (function () {
                 result = this.valueMatches(
                     this.getPropertyPath(issue, query.get("property")),
                     query.get("value"),
-                    query.get("isRegexp")
+                    query.get("matchType")
                 );
                 break;
             case "contains":
@@ -66,7 +95,7 @@ var Queries = (function () {
                     return self.valueMatches(
                         self.getPropertyPath(item, query.get("matchProperty")),
                         query.get("value"),
-                        query.get("isRegexp")
+                        query.get("matchType")
                     );
                 });
                 break;
@@ -94,14 +123,35 @@ var Queries = (function () {
         
         getValue: function () {
             return this.get("value") || "";
+        },
+        
+        validate: function (attrs) {
+            // Check if we're going to change from incomplete to complete. If so, send an event.
+            if (this.get("type") === "incomplete" && attrs.type !== "incomplete") {
+                this.trigger("completing", this);
+            }
         }
     });
     
     var Queries = Backbone.Collection.extend({
-        model: Query
+        model: Query,
+        
+        initialize: function () {
+            this.on("completing", this.completing, this);
+        },
+        
+        completing: function (model) {
+            // Add a new incomplete item after the given model, so the user has a place to type.
+            var index = this.indexOf(model);
+            if (index !== -1) {
+                this.add(new Query({type: "incomplete"}), {at: index + 1});
+            }
+        }
     });
     
     var QueryLeafView = Backbone.View.extend({
+        className: "query-leaf",
+        
         events: {
             "click .query-delete": "deleteModel",
             "click .query-leaf-value": "editValue",
@@ -119,13 +169,15 @@ var Queries = (function () {
                 this.template({
                     label: this.model.get("type") === "incomplete" ? "" : this.model.getLabel(),
                     value: this.model.getValue(),
-                    completeness: this.model.get("type") === "incomplete" ? "incomplete" : "complete"
+                    complete: this.model.get("type") !== "incomplete"
                 })
             );
             if (this.model.get("type") === "incomplete") {
-                // TODO: this doesn't set focus if we aren't in the DOM yet, as on first render
-                this.editValue();
+                this.$el.removeClass("complete").addClass("incomplete");
+            } else {
+                this.$el.removeClass("incomplete").addClass("complete");
             }
+            this.$el.addClass("clearfix");
             return this;
         },
         
@@ -141,18 +193,18 @@ var Queries = (function () {
                     "value": this.model.getValue()
                 }));
                 this.$(".query-value").empty().append(this.editor);
-                this.editor.focus().select();
+                FocusManager.setFocus(this.editor);
             }
         },
         
         commitEdit: function () {
             if (this.mode === "edit") {
-                var parts = this.editor.val().split("==");
+                // TODO: move these heuristics into Suggestions
+                var parts = this.editor.val().split(":");
                 parts.forEach(function (value, index) {
                     parts[index] = value.trim();
                 });
                 if (parts.length === 2) {
-                    // TODO: generalize these hardcoded heuristics somehow
                     if (parts[0] === "label") {
                         parts[0] = "labels";
                     }
@@ -160,6 +212,8 @@ var Queries = (function () {
                     this.model.set("property", parts[0]);
                     if (parts[0] === "labels") {
                         this.model.set("matchProperty", "name");
+                    } else if (parts[0] === "title" || parts[0] === "body") {
+                        this.model.set("matchType", "substring");
                     }
                     this.model.set("value", parts[1]);
                 } else {
@@ -189,9 +243,17 @@ var Queries = (function () {
         },
         
         render: function () {
-            this.$el.empty();
+            this.$el.empty().addClass("clearfix");
             this.renderQuery(this.model);
             return this;
+        },
+        
+        addView: function (query) {
+            var newView = new QueryLeafView({model: query}).render();
+            this.$el.append(newView.el);
+            if (query.get("type") === "incomplete") {
+                newView.editValue();
+            }
         },
         
         renderQuery: function (query) {
@@ -204,18 +266,18 @@ var Queries = (function () {
                     if (first) {
                         first = false;
                     } else {
-                        self.$el.append("<div class='query-punctuation'>" +
+                        self.$el.append("<div class='query-punctuation clearfix'>" +
                                         (query.get("type") === "and" ? "&amp;&amp;" : "||") +
                                         "</div>");
                     }
-                    self.$el.append(new QueryView({model: childQuery}).render().el);
+                    self.addView(childQuery);
                 });
                 break;
 
             case "is":
             case "contains":
             case "incomplete":
-                this.$el.append(new QueryLeafView({model: query}).render().el);
+                self.addView(query);
                 break;
             }
         }
@@ -224,5 +286,6 @@ var Queries = (function () {
     exports.Query = Query;
     exports.Queries = Queries;
     exports.QueryView = QueryView;
+    exports.FocusManager = FocusManager;
     return exports;
 }());

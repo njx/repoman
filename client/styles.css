@@ -104,12 +104,13 @@ table {
 
 .issue-label {
     line-height: 1em;
-    display: inline-block;
+    float: left;
     font-size: 0.9em;
     font-weight: bold;
     color: white;
     border-radius: 3px;
-    padding: 3px;
+    padding: 5px;
+    margin: 3px;
 }
 
 img.assignee {
@@ -132,19 +133,20 @@ img.assignee {
 }
 
 .query {
-    display: inline-block;
+    float: left;
     font-size: 14px;
     padding: 5px;
-    vertical-align: middle;
 }
 
 .query-punctuation {
-    display: inline-block;
+    float: left;
     color: #999;
+    margin: 8px;
+    padding-top: 18px;
 }
 
 .query-leaf {
-    display: inline-block;
+    float: left;
 }
 
 .query-leaf-label {
@@ -159,10 +161,13 @@ img.assignee {
     vertical-align: middle;
     background: #ccc;
 }
+
 .query-leaf-value input {
+    margin: -4px;
     font-size: 14px;
     font-weight: bold;
     width: 150px;
+    height: 16px;
 }
 
 .query-delete {
@@ -177,5 +182,5 @@ img.assignee {
 }
 
 .query-value {
-    display: inline-block;
+    float: left;
 }

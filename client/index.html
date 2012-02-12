@@ -50,7 +50,7 @@
             </div>
             
             <div id="issues-page">
-                <div id="query-view"></div>
+                <div id="query-view" class="clearfix"></div>
                 <div id="issues-container"></div>
             </div>
             
@@ -91,12 +91,12 @@
         </script>
         
         <script id="t-query-leaf" type="text/x-handlebars-template">
-            <div class="query-leaf {{completeness}}">
-                <div class="query-leaf-label">{{label}}</div>
-                <div class="query-leaf-value">
-                    <div class="query-delete"></div>
-                    <div class="query-value">{{value}}</div>
-                </div>
+            <div class="query-leaf-label clearfix">{{label}}</div>
+            <div class="query-leaf-value clearfix">
+                {{#if complete}}
+                     <div class="query-delete clearfix"></div>
+                {{/if}}
+                <div class="query-value clearfix">{{value}}</div>
             </div>
         </script>
 </body>

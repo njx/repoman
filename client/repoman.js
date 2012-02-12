@@ -80,6 +80,7 @@ $(document).ready(function () {
             $("#issues-page").show();
 
             $("#query-view").append(new Queries.QueryView({model: query}).render().el);
+            Queries.FocusManager.refreshFocus();
             query.on("all", function () {
                 refreshIssues();
             });
