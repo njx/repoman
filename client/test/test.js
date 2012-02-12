@@ -49,8 +49,6 @@
         "created_at": "2012-02-06T23:48:34Z"
     });
     
-    // TODO: Rewrite all queries to be models with attributes and submodels
-    
     test("simple property query", function () {
         var query = new Queries.Query({
             type: "is",
