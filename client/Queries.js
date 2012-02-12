@@ -118,7 +118,7 @@ var Queries = (function () {
             if (this.get("type") === "incomplete") {
                 return "";
             }
-            return this.get("property") + " " + this.get("type");
+            return (this.get("negated") ? "!(" : "") + this.get("property") + " " + this.get("type") + (this.get("negated") ? ")" : "");
         },
         
         getValue: function () {
@@ -200,7 +200,13 @@ var Queries = (function () {
         commitEdit: function () {
             if (this.mode === "edit") {
                 // TODO: move these heuristics into Suggestions
-                var parts = this.editor.val().split(":");
+                var queryStr = this.editor.val();
+                var negated = false;
+                if (queryStr && queryStr.charAt(0) === "!") {
+                    negated = true;
+                    queryStr = queryStr.slice(1);
+                }
+                var parts = queryStr.split(":");
                 parts.forEach(function (value, index) {
                     parts[index] = value.trim();
                 });
@@ -219,6 +225,7 @@ var Queries = (function () {
                 } else {
                     this.model.set("value", parts[0]);
                 }
+                this.model.set("negated", negated);
                 this.mode = "view";
                 this.render();
             }
