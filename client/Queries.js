@@ -61,9 +61,9 @@ var Queries = (function () {
                 if (matchType === "regexp") {
                     return new RegExp(desired).test(actual);
                 } else if (matchType === "substring") {
-                    return actual.indexOf(desired) !== -1;
+                    return actual.toLowerCase().indexOf(desired.toLowerCase()) !== -1;
                 } else {
-                    return actual === desired;
+                    return actual.toLowerCase() === desired.toLowerCase();
                 }
             }
         },

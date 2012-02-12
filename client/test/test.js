@@ -199,6 +199,23 @@
         ok(!query.matches(issue), "body does not exactly match containing");
     });
     
+    test("matches ignore case", function () {
+        var query = new Queries.Query({
+            type: "is",
+            property: "body",
+            value: "CoNTaIniNg",
+            matchType: "substring"
+        });
+        ok(query.matches(issue), "body matches substring CoNTaIniNg");
+        
+        query = new Queries.Query({
+            type: "is",
+            property: "user.login",
+            value: "JohnDoe"
+        });
+        ok(query.matches(issue), "user.login matches JohnDoe");
+    });
+    
     /*
     var sampleQuery = {
         type: "and",
