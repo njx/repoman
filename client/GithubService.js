@@ -30,6 +30,9 @@ var GithubService = (function () {
     }
     
     function sendIssueRequest(user, repo, params) {
+        params = params || {};
+        // TODO: get all pages, or figure out some other pagination strategy
+        params.per_page = params.per_page || 100;
         return sendRequest(constructUriPath(['repos', user, repo, 'issues']), {
             data: params
         });

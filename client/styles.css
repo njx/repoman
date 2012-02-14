@@ -163,11 +163,10 @@ img.assignee {
 }
 
 .query-leaf-value input {
-    margin: -4px;
+    margin: -7px -4px -4px -4px;
     font-size: 14px;
     font-weight: bold;
     width: 150px;
-    height: 16px;
 }
 
 .query-delete {
