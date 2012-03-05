@@ -88,6 +88,9 @@ $(document).ready(function () {
             repos.on("all", function () {
                 refreshIssues();
             });
+            $(".query-refresh").on("click", function () {
+                refreshIssues();
+            });
             
             refreshIssues();
         });
