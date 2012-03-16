@@ -55,8 +55,15 @@ var Queries = (function () {
         },
     
         valueMatches: function (actual, desired, matchType) {
-            if (actual === null) {
+            if (desired === "null") {
+                desired = null;
+            } else if (desired === "undefined") {
+                desired = undefined;
+            }
+            if (actual === null || actual === undefined) {
                 return actual === desired;
+            } else if (desired === null || desired === undefined) {
+                return false;
             } else {
                 if (matchType === "regexp") {
                     return new RegExp(desired).test(actual);
