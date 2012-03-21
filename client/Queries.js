@@ -129,7 +129,11 @@ var Queries = (function () {
         },
         
         getValue: function () {
-            return this.get("value") || "";
+            if (this.get("value") === null) {
+                return "null";
+            } else {
+                return this.get("value");
+            }
         },
         
         validate: function (attrs) {

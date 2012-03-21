@@ -6,11 +6,6 @@ $(document).ready(function () {
     
     var issuesTemplate = Handlebars.compile($("#t-issues-summary").html());
     var repos = new Models.Repos();
-//    var query = new Queries.Query({
-//        type: "is",
-//        property: "state",
-//        value: "open"
-//    });
     var query = new Queries.Query({
         type: "and",
         children: new Queries.Queries([
@@ -18,6 +13,11 @@ $(document).ready(function () {
                 type: "is",
                 property: "state",
                 value: "open"
+            }),
+            new Queries.Query({
+                type: "is",
+                property: "pull_request.html_url",
+                value: null
             }),
             new Queries.Query({
                 type: "incomplete"
