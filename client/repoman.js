@@ -66,7 +66,6 @@ $(document).ready(function () {
     function init() {
         repos.add(new Models.Repo({user: "adobe", repo: "brackets"}));
         repos.add(new Models.Repo({user: "adobe", repo: "brackets-app"}));
-        repos.add(new Models.Repo({user: "adobe", repo: "CodeMirror2"}));
         
         $("#login-form").submit(function (event) {
             event.preventDefault();
