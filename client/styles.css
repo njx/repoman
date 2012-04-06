@@ -20,7 +20,7 @@ html, body {
 }
 
 .container {
-    background: #fff;
+    background: #f6f6f6;
     padding: 24px;
     margin-top: 200px;
 
@@ -67,6 +67,8 @@ html, body {
     background-image: -webkit-linear-gradient(top, #999, #666);
     margin-top: 20px;
     margin-bottom: 0;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
 }
 
 .repo {
@@ -96,6 +98,7 @@ html, body {
 
 .table-bordered {
     border-radius: 0;
+    background: #fff;
 }
 
 .issue-labels {
@@ -125,7 +128,7 @@ img.assignee {
 
 .query-container {
     border: 1px solid #ddd;
-    background: #f9f9f9;
+    background: #fff;
     margin-top: -18px;
     -webkit-box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.2) inset;
     -moz-box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.2) inset;
