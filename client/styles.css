@@ -20,9 +20,11 @@ html, body {
 }
 
 .container {
-    background: #f6f6f6;
+    background: #eee;
     padding: 24px;
     margin-top: 200px;
+    width: 90%;
+    max-width: 900px;
 
     -webkit-transition: margin-top 0.25s ease-out;
     -moz-transition: margin-top 0.25s ease-out;
@@ -67,8 +69,8 @@ html, body {
     background-image: -webkit-linear-gradient(top, #999, #666);
     margin-top: 20px;
     margin-bottom: 0;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
 }
 
 .repo {
@@ -80,7 +82,7 @@ html, body {
 }
 
 .num-issues {
-    float: left;
+    float: right;
     font-weight: bold;
     font-size: 14px;
     color: #fff;
@@ -90,7 +92,7 @@ html, body {
     text-align: center;
     min-width: 17px;
     padding: 3px;
-    margin: -15px -15px 13px -15px;
+    margin: 8px;
     -webkit-box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.5);
     -moz-box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.5);
     box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.5);
@@ -114,6 +116,14 @@ html, body {
     border-radius: 3px;
     padding: 5px;
     margin: 3px;
+}
+
+table .numbers {
+    text-align: right;
+}
+table .assignees {
+    width: 60px;
+    text-align: center;
 }
 
 img.assignee {

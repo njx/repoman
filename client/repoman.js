@@ -63,35 +63,38 @@ $(document).ready(function () {
         });
     }
     
+    function login(username, password) {
+        GithubService.setUserInfo(username, password);
+        $(".container").css({
+            "margin-top": "10px",
+            "min-height": "100%"
+        });
+        $("#login-page").hide();
+        $("#issues-page").show();
+
+        $("#query-view").append(new Queries.QueryView({model: query}).render().el);
+        Queries.FocusManager.refreshFocus();
+        query.on("all", function () {
+            refreshIssues();
+        });
+    
+        repos.on("all", function () {
+            refreshIssues();
+        });
+        $(".query-refresh").on("click", function () {
+            refreshIssues();
+        });
+        
+        refreshIssues();
+    }
+    
     function init() {
         repos.add(new Models.Repo({user: "adobe", repo: "brackets"}));
-        repos.add(new Models.Repo({user: "adobe", repo: "brackets-app"}));
+        repos.add(new Models.Repo({user: "adobe", repo: "edge-code"}));
         
         $("#login-form").submit(function (event) {
             event.preventDefault();
-            
-            GithubService.setUserInfo($("#login-username").val(), $("#login-password").val());
-            $(".container").css({
-                "margin-top": "10px",
-                "min-height": "100%"
-            });
-            $("#login-page").hide();
-            $("#issues-page").show();
-
-            $("#query-view").append(new Queries.QueryView({model: query}).render().el);
-            Queries.FocusManager.refreshFocus();
-            query.on("all", function () {
-                refreshIssues();
-            });
-        
-            repos.on("all", function () {
-                refreshIssues();
-            });
-            $(".query-refresh").on("click", function () {
-                refreshIssues();
-            });
-            
-            refreshIssues();
+            login($("#login-username").val(), $("#login-password").val());
         });
         
         $("#login-username").focus();

@@ -7,19 +7,19 @@
         <link href="lib/bootstrap.min.css" rel="stylesheet" type="text/css">
         <link href="styles.css" rel="stylesheet" type="text/css">
         
-        <script src="lib/jquery-1.7.1.min.js" type="text/javascript"></script>
-        <script src="lib/base64.js" type="text/javascript"></script>
-        <script src="lib/handlebars-1.0.0.beta.6.js" type="text/javascript"></script>
-        <script src="lib/underscore-min.js" type="text/javascript"></script>
-        <script src="lib/backbone-min.js" type="text/javascript"></script>
-        <script src="lib/spin.js" type="text/javascript"></script>
+        <script src="lib/jquery-1.7.1.min.js"></script>
+        <script src="lib/base64.js"></script>
+        <script src="lib/handlebars-1.0.0.beta.6.js"></script>
+        <script src="lib/underscore-min.js"></script>
+        <script src="lib/backbone-min.js"></script>
+        <script src="lib/spin.js"></script>
         
-        <script src="GithubService.js" type="text/javascript"></script>
-        <script src="Models.js" type="text/javascript"></script>
-        <script src="Queries.js" type="text/javascript"></script>
-        <script src="Suggestions.js" type="text/javascript"></script>
+        <script src="GithubService.js"></script>
+        <script src="Models.js"></script>
+        <script src="Queries.js"></script>
+        <script src="Suggestions.js"></script>
 
-        <script src="repoman.js" type="text/javascript"></script>
+        <script src="repoman.js"></script>
     </head>
 
     <body>
@@ -68,20 +68,18 @@
             <table class="table table-bordered table-striped">
                 <thead>
                     <tr>
-                        <th>#</th>
-                        <th>Title</th>
-                        <th>Assignee</th>
-                        <th>Milestone</th>
-                        <th>Labels</th>    
+                        <th class="numbers">#</th>
+                        <th class="titles">Title</th>
+                        <th class="assignees">Assignee</th>
+                        <th class="issue-labels">Labels</th>    
                     </tr>
                 </thead>
                 <tbody>
                     {{#each issues}}
                         <tr>
-                            <td width="50">{{number}}</td>
-                            <td width="400"><a href="{{html_url}}" target="_blank">{{title}}</a></td>
-                            <td width="60"><img class="assignee" src="{{assignee.avatar_url}}"></td>
-                            <td width="80">{{milestone.title}}</td>
+                            <td class="numbers">{{number}}</td>
+                            <td class="titles"><a href="{{html_url}}" target="_blank">{{title}}</a></td>
+                            <td class="assignees"><img class="assignee" src="{{assignee.avatar_url}}"></td>
                             <td class="issue-labels">
                                 {{#each labels}}
                                     <div class="issue-label" style="background-color: #{{color}}">{{name}}</div>
