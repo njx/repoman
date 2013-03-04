@@ -224,6 +224,8 @@ var Queries = (function () {
                 if (parts.length === 2) {
                     if (parts[0] === "label") {
                         parts[0] = "labels";
+                    } else if (parts[0] === "milestone") {
+                        parts[0] = "milestone.title";
                     }
                     this.model.set("type", (parts[0] === "labels" ? "contains" : "is"));
                     this.model.set("property", parts[0]);
