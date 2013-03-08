@@ -217,26 +217,36 @@ var Queries = (function () {
                     negated = true;
                     queryStr = queryStr.slice(1);
                 }
-                var parts = queryStr.split(":");
+                var parts = queryStr.split(/\=+/);
                 parts.forEach(function (value, index) {
                     parts[index] = value.trim();
                 });
-                if (parts.length === 2) {
-                    if (parts[0] === "label") {
-                        parts[0] = "labels";
-                    } else if (parts[0] === "milestone") {
-                        parts[0] = "milestone.title";
-                    }
-                    this.model.set("type", (parts[0] === "labels" ? "contains" : "is"));
-                    this.model.set("property", parts[0]);
-                    if (parts[0] === "labels") {
-                        this.model.set("matchProperty", "name");
-                    } else if (parts[0] === "title" || parts[0] === "body") {
-                        this.model.set("matchType", "substring");
-                    }
+                
+                // Special cases
+                if (parts[0] === "label") {
+                    parts[0] = "labels";
+                } else if (parts[0] === "milestone") {
+                    parts[0] = "milestone.title";
+                } else if (parts[0] === "assignee") {
+                    parts[0] = "assignee.login";
+                } else if (parts[0] === "pull_request") {
+                    parts[0] = "pull_request.html_url";
+                }
+                
+                this.model.set("type", (parts[0] === "labels" ? "contains" : "is"));
+                this.model.set("property", parts[0]);
+                if (parts[0] === "labels") {
+                    this.model.set("matchProperty", "name");
+                } else if (parts[0] === "title" || parts[0] === "body") {
+                    this.model.set("matchType", "substring");
+                }
+                
+                if (parts[1]) {
                     this.model.set("value", parts[1]);
                 } else {
-                    this.model.set("value", parts[0]);
+                    // If no value, assume they just want to check if it's set (or not).
+                    negated = !negated;
+                    this.model.set("value", null);
                 }
                 this.model.set("negated", negated);
                 this.mode = "view";
