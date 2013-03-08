@@ -1,0 +1,17 @@
+{
+    "name": "repoman",
+    "version": "0.1.0",
+    "author": "Narciso Jaramillo <nopqrs@gmail.com>",
+    "scripts": {
+        "start": "node ./index.js"
+    },
+    "main": "./index.js",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/njx/repoman.git"
+    },
+    "license": "MIT",
+    "engines": {
+        "node": ">=0.8"
+    }
+}
