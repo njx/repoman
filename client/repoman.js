@@ -90,7 +90,6 @@ $(document).ready(function () {
     
     function init() {
         repos.add(new Models.Repo({user: "adobe", repo: "brackets"}));
-        repos.add(new Models.Repo({user: "adobe", repo: "edge-code"}));
         
         $("#login-form").submit(function (event) {
             event.preventDefault();
