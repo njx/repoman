@@ -25,6 +25,49 @@ $(document).ready(function () {
         ])
     });
     
+    // From http://stackoverflow.com/questions/5623838/rgb-to-hex-and-hex-to-rgb
+    function hexToRgb(hex) {
+        // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
+        var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+        hex = hex.replace(shorthandRegex, function (m, r, g, b) {
+            return r + r + g + g + b + b;
+        });
+    
+        var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+        return result ? {
+            r: parseInt(result[1], 16),
+            g: parseInt(result[2], 16),
+            b: parseInt(result[3], 16)
+        } : null;
+    }
+
+    function textColorFor(bgColor) {
+        var rgb = hexToRgb(bgColor);
+        rgb.r /= 255;
+        rgb.g /= 255;
+        rgb.b /= 255;
+        var l = (0.299 * rgb.r + 0.587 * rgb.g + 0.114 * rgb.b);
+    
+        if (l > 0.5) {
+            return "#666";
+        } else {
+            return "#fff";
+        }
+    }
+    
+    function addLabelColors(issue) {
+        var labels = issue.get("labels");
+        if (labels) {
+            labels.forEach(function (label) {
+                if (label.color) {
+                    label.text_color = textColorFor(label.color);
+                }
+            });
+            issue.set("labels", labels);
+        }
+        return issue;
+    }
+    
     // TODO: factor into IssuesView module
     function refreshIssues() {
         // TODO: instead of waiting for everything to load, add headings immediately with
@@ -54,7 +97,7 @@ $(document).ready(function () {
                     $("#issues-container").append(issuesTemplate(
                         {
                             repo: repo.getFullName(),
-                            issues: _.map(issues, function (issue) { return issue.toJSON(); }),
+                            issues: _.map(issues, function (issue) { return addLabelColors(issue).toJSON(); }),
                             numIssues: issues.length
                         }
                     ));

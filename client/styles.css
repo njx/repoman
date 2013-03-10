@@ -108,14 +108,12 @@ html, body {
 }
 
 .issue-label {
+    display: inline-block;
     line-height: 1em;
-    float: left;
     font-size: 0.9em;
-    font-weight: bold;
-    color: white;
     border-radius: 3px;
     padding: 5px;
-    margin: 3px;
+    margin-right: 5px;
 }
 
 table .numbers {
@@ -124,12 +122,29 @@ table .numbers {
 table .assignees {
     width: 60px;
     text-align: center;
+    vertical-align: middle;
 }
 
 img.assignee {
     width: 32px;
     height: 32px;
+}
+
+.issue-title {
+    font-weight: bold;
+    color: #333;
+}
+
+.pull-request {
+    font-weight: bold;
+    color: #999;
+}
+
+.milestone {
+    display: inline-block;
     margin-right: 5px;
+    font-weight: bold;
+    color: #999;
 }
 
 /*-----------------------*

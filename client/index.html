@@ -66,25 +66,17 @@
                 <h3 class="repo">{{repo}}</h3>
             </div>
             <table class="table table-bordered table-striped">
-                <thead>
-                    <tr>
-                        <th class="numbers">#</th>
-                        <th class="titles">Title</th>
-                        <th class="assignees">Assignee</th>
-                        <th class="issue-labels">Labels</th>    
-                    </tr>
-                </thead>
                 <tbody>
                     {{#each issues}}
                         <tr>
-                            <td class="numbers">{{number}}</td>
-                            <td class="titles"><a href="{{html_url}}" target="_blank">{{title}}</a></td>
-                            <td class="assignees"><img class="assignee" src="{{assignee.avatar_url}}"></td>
-                            <td class="issue-labels">
-                                {{#each labels}}
-                                    <div class="issue-label" style="background-color: #{{color}}">{{name}}</div>
-                                {{/each}}
+                            <td class="numbers"><a href="{{html_url}}" target="_blank">#{{number}}</a></td>
+                            <td class="titles">
+                                {{#if pull_request.html_url}}<span class="pull-request">Pull Request: </span>{{/if}}
+                                <a href="{{html_url}}" target="_blank"><span class="issue-title">{{title}}</span></a>
+                                {{#each labels}}<div class="issue-label" style="background-color: #{{color}}; color: {{text_color}};">{{name}}</div>{{/each}}<br>
+                                {{#if milestone}}<span class="milestone">{{milestone.title}}</span>{{/if}}
                             </td>
+                            <td class="assignees"><img class="assignee" src="{{assignee.avatar_url}}"></td>
                         </tr>
                     {{/each}}
                     </tbody>
