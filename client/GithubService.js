@@ -30,7 +30,8 @@ define(function (require, exports, module) {
                 
                 var link = xhr.getResponseHeader("Link"), match;
                 if (link && (match = link.match(/<([^>]*)>; rel="next"/)) !== null) {
-                    accumulatePages(match[1], settings, results, deferred);
+                    var url = match[1].replace("https://api.github.com", "/api");
+                    accumulatePages(url, settings, results, deferred);
                 } else {
                     deferred.resolve(results);
                 }
