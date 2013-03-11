@@ -56,13 +56,14 @@ html, body {
     margin-top: -32px;
 }
 
+/* TODO: disable login view for now */
+#login-page {
+    display: none;
+}
+
 /*-----------------------*
  *------- Issues --------*
  *-----------------------*/
-
-#issues-page {
-    display: none;
-}
 
 .issues-head {
     background-color: #000;
