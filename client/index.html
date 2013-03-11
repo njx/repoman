@@ -8,18 +8,14 @@
         <link href="styles.css" rel="stylesheet" type="text/css">
         
         <script src="lib/jquery-1.7.1.min.js"></script>
+        <script src="lib/bootstrap.min.js"></script>
         <script src="lib/base64.js"></script>
         <script src="lib/handlebars-1.0.0.beta.6.js"></script>
         <script src="lib/underscore-min.js"></script>
         <script src="lib/backbone-min.js"></script>
         <script src="lib/spin.js"></script>
         
-        <script src="GithubService.js"></script>
-        <script src="Models.js"></script>
-        <script src="Queries.js"></script>
-        <script src="Suggestions.js"></script>
-
-        <script src="repoman.js"></script>
+        <script src="lib/require.js" data-main="repoman"></script>
     </head>
 
     <body>
@@ -63,7 +59,7 @@
         <script id="t-issues-summary" type="text/x-handlebars-template">
             <div class="issues-head clearfix">
                 <p class="num-issues">{{numIssues}}</p>
-                <h3 class="repo">{{repo}}</h3>
+                <h4 class="repo">{{repo}}</h4>
             </div>
             <table class="table table-bordered table-striped">
                 <tbody>

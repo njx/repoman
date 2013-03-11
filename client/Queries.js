@@ -1,10 +1,10 @@
 /*jslint vars: true, plusplus: true, devel: true, browser: true, nomen: true, indent: 4, maxerr: 50 */
-/*global Backbone: false, _: false, Handlebars: false, $: false */
+/*global define, Backbone, _, Handlebars, $ */
 
-var Queries = (function () {
+define(function (require, exports, module) {
     "use strict";
     
-    var exports = {};
+    var Suggestions = require("Suggestions");
     
     // We use this to make sure that focus gets set properly once query views have been created.
     var FocusManager = (function () {
@@ -166,6 +166,7 @@ var Queries = (function () {
         events: {
             "click .query-delete": "deleteModel",
             "click .query-leaf-value": "editValue",
+            "change input": "commitEdit",
             "keypress input": "maybeCommit"
         },
         
@@ -197,21 +198,23 @@ var Queries = (function () {
         },
         
         editValue: function () {
+            var self = this;
             if (this.mode !== "edit") {
                 this.mode = "edit";
                 this.editor = $(this.make("input", {
                     "type": "text",
                     "value": this.model.getValue()
                 }));
+                Suggestions.attach(this.editor);
                 this.$(".query-value").empty().append(this.editor);
                 FocusManager.setFocus(this.editor);
             }
         },
         
         commitEdit: function () {
+            var queryStr = this.editor.val();
             if (this.mode === "edit") {
                 // TODO: move these heuristics into Suggestions
-                var queryStr = this.editor.val();
                 var negated = false;
                 if (queryStr && queryStr.charAt(0) === "!") {
                     negated = true;
@@ -226,36 +229,39 @@ var Queries = (function () {
                 if (parts[0] === "label") {
                     parts[0] = "labels";
                 } else if (parts[0] === "milestone") {
-                    parts[0] = "milestone.title";
-                } else if (parts[0] === "assignee") {
-                    parts[0] = "assignee.login";
+                    parts[0] += ".title";
+                } else if (parts[0] === "assignee" || parts[0] === "user") {
+                    parts[0] += ".login";
                 } else if (parts[0] === "pull_request") {
-                    parts[0] = "pull_request.html_url";
+                    parts[0] += ".html_url";
                 }
                 
-                this.model.set("type", (parts[0] === "labels" ? "contains" : "is"));
-                this.model.set("property", parts[0]);
+                var attrs = {
+                    type: (parts[0] === "labels" ? "contains" : "is"),
+                    property: parts[0]
+                };
+                
                 if (parts[0] === "labels") {
-                    this.model.set("matchProperty", "name");
+                    attrs.matchProperty = "name";
                 } else if (parts[0] === "title" || parts[0] === "body") {
-                    this.model.set("matchType", "substring");
+                    attrs.matchType = "substring";
                 }
                 
                 if (parts[1]) {
-                    this.model.set("value", parts[1]);
+                    attrs.value = parts[1];
                 } else {
                     // If no value, assume they just want to check if it's set (or not).
                     negated = !negated;
-                    this.model.set("value", null);
+                    attrs.value = null;
                 }
-                this.model.set("negated", negated);
+                attrs.negated = negated;
+                this.model.set(attrs);
                 this.mode = "view";
                 this.render();
             }
         },
-        
-        maybeCommit: function (event) {
-            if (event.keyCode === 13) {
+        maybeCommit: function (e) {
+            if (e.keyCode === 13) {
                 this.commitEdit();
             }
         }
@@ -317,5 +323,4 @@ var Queries = (function () {
     exports.Queries = Queries;
     exports.QueryView = QueryView;
     exports.FocusManager = FocusManager;
-    return exports;
-}());
+});

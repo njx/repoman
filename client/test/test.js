@@ -1,8 +1,15 @@
 /*jslint vars: true, plusplus: true, devel: true, browser: true, nomen: true, indent: 4, maxerr: 50 */
-/*global test: false, ok: false, Models: false, Queries: false */
+/*global require, define, test, ok */
 
-(function () {
+require.config({
+    baseUrl: ".."
+});
+
+define(function (require, exports, module) {
     "use strict";
+    
+    var Models = require("Models"),
+        Queries = require("Queries");
 
     var issue = new Models.Issue({
         "labels": [
@@ -244,4 +251,4 @@
         ]
     };
     */
-}());
+});

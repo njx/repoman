@@ -1,11 +1,11 @@
 /*jslint vars: true, plusplus: true, devel: true, browser: true, nomen: true, indent: 4, maxerr: 50 */
-/*global Backbone: false, _: false, $: false, GithubService: false */
+/*global define, Backbone, _, $ */
 
-var Models = (function () {
+define(function (require, exports, module) {
     "use strict";
-
-    var exports = {};
     
+    var GithubService = require("GithubService");
+
     // TODO: is there any real value to using Backbone models here, given that
     // they're static once loaded?
     
@@ -25,7 +25,7 @@ var Models = (function () {
         fetchIssues: function () {
             var self = this;
             var result = new $.Deferred();
-            GithubService.sendIssueRequest(this.get("user"), this.get("repo"))
+            GithubService.sendRepoInfoRequest(this.get("user"), this.get("repo"), "issues")
                 .done(function (response) {
                     var issues = new Issues();
                     _.each(response, function (issue) {
@@ -48,5 +48,4 @@ var Models = (function () {
     exports.Repos = Repos;
     exports.Issue = Issue;
     exports.Issues = Issues;
-    return exports;
-}());
+});

@@ -1,10 +1,9 @@
 /*jslint vars: true, plusplus: true, devel: true, browser: true, nomen: true, indent: 4, maxerr: 50, regexp: true */
-/*global $: false, base64: false */
+/*global define, $, base64 */
 
-var GithubService = (function () {
+define(function (require, exports, module) {
     'use strict';
     
-    var exports = {};
     var _username, _password;
 
     function setUserInfo(username, password) {
@@ -47,18 +46,20 @@ var GithubService = (function () {
         var result = $.Deferred();
         settings = settings || {};
         settings.beforeSend = function (xhr) {
-            xhr.setRequestHeader("Authorization", "Basic " + base64.encode(_username + ":" + _password));
+            if (_username && _password) {
+                xhr.setRequestHeader("Authorization", "Basic " + base64.encode(_username + ":" + _password));
+            }
         };
         settings.dataType = "json";
         return accumulatePages("https://localhost:8080/api" + path, settings);
     }
     
-    function sendIssueRequest(user, repo, params) {
+    function sendRepoInfoRequest(user, repo, infoType, params) {
         var result = $.Deferred();
         params = params || {};
         // TODO: get all pages, or figure out some other pagination strategy
         params.per_page = params.per_page || 100;
-        sendRequest(constructUriPath(['repos', user, repo, 'issues']), {
+        sendRequest(constructUriPath(['repos', user, repo, infoType]), {
             data: params
         }).done(function (allResponses) {
             var flattened = [];
@@ -73,6 +74,5 @@ var GithubService = (function () {
     }
     
     exports.setUserInfo = setUserInfo;
-    exports.sendIssueRequest = sendIssueRequest;
-    return exports;
-}());
+    exports.sendRepoInfoRequest = sendRepoInfoRequest;
+});

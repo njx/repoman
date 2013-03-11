@@ -1,29 +1,36 @@
 /*jslint vars: true, plusplus: true, devel: true, browser: true, nomen: true, indent: 4, maxerr: 50 */
-/*global $: false, _: false, Spinner: false, Handlebars: false, GithubService: false, Models: false, Queries: false */
+/*global define, $, _, Spinner, Handlebars */
 
-$(document).ready(function () {
+define(function (require, exports, module) {
     "use strict";
     
-    var issuesTemplate = Handlebars.compile($("#t-issues-summary").html());
-    var repos = new Models.Repos();
-    var query = new Queries.Query({
-        type: "and",
-        children: new Queries.Queries([
-            new Queries.Query({
-                type: "is",
-                property: "state",
-                value: "open"
-            }),
-            new Queries.Query({
-                type: "is",
-                property: "pull_request.html_url",
-                value: null
-            }),
-            new Queries.Query({
-                type: "incomplete"
-            })
-        ])
-    });
+    var Models = require("Models"),
+        Queries = require("Queries"),
+        GithubService = require("GithubService"),
+        Suggestions = require("Suggestions");
+    
+    var issuesTemplate = Handlebars.compile($("#t-issues-summary").html()),
+        repos = new Models.Repos(),
+        query = new Queries.Query({
+            type: "and",
+            children: new Queries.Queries([
+                new Queries.Query({
+                    type: "is",
+                    property: "state",
+                    value: "open"
+                }),
+                new Queries.Query({
+                    type: "is",
+                    property: "pull_request.html_url",
+                    value: null
+                }),
+                new Queries.Query({
+                    type: "incomplete"
+                })
+            ])
+        }),
+        resultCache,
+        refreshing = false;
     
     // From http://stackoverflow.com/questions/5623838/rgb-to-hex-and-hex-to-rgb
     function hexToRgb(hex) {
@@ -68,23 +75,15 @@ $(document).ready(function () {
         return issue;
     }
     
-    // TODO: factor into IssuesView module
-    function refreshIssues() {
-        // TODO: instead of waiting for everything to load, add headings immediately with
-        // spinners, then fill as data comes in
-        $("#spinner").show();
-        var spinner = new Spinner({color: "#fff", width: 4}).spin($("#spinner").get(0));
-        var promises = [];
-        repos.each(function (repo) {
-            promises.push(repo.fetchIssues());
-        });
-        $.when.apply(window, promises).then(function () {
-            spinner.stop();
-            $("#spinner").hide();
+    function updateQueryResults() {
+        if (!resultCache) {
+            if (!refreshing) {
+                refreshIssues();
+            }
+        } else {
             $("#issues-container").empty();
-            var results = Array.prototype.slice.call(arguments);
             repos.each(function (repo) {
-                var foundResult = _.find(results, function (result) { return result.repo === repo; });
+                var foundResult = _.find(resultCache, function (result) { return result.repo === repo; });
                 var issues = [];
                 if (foundResult) {
                     issues = foundResult.issues.filter(
@@ -103,6 +102,26 @@ $(document).ready(function () {
                     ));
                 }
             });
+        }
+    }
+    
+    // TODO: factor into IssuesView module
+    function refreshIssues() {
+        // TODO: instead of waiting for everything to load, add headings immediately with
+        // spinners, then fill as data comes in
+        refreshing = true;
+        $("#spinner").show();
+        var spinner = new Spinner({color: "#fff", width: 4}).spin($("#spinner").get(0));
+        var promises = [];
+        repos.each(function (repo) {
+            promises.push(repo.fetchIssues());
+        });
+        $.when.apply(window, promises).then(function () {
+            spinner.stop();
+            $("#spinner").hide();
+            resultCache = Array.prototype.slice.call(arguments);
+            refreshing = false;
+            updateQueryResults();
         });
     }
     
@@ -118,7 +137,7 @@ $(document).ready(function () {
         $("#query-view").append(new Queries.QueryView({model: query}).render().el);
         Queries.FocusManager.refreshFocus();
         query.on("all", function () {
-            refreshIssues();
+            updateQueryResults();
         });
     
         repos.on("all", function () {
@@ -132,14 +151,19 @@ $(document).ready(function () {
     }
     
     function init() {
+        Suggestions.setRepos(repos);
+        
         repos.add(new Models.Repo({user: "adobe", repo: "brackets"}));
         
-        $("#login-form").submit(function (event) {
-            event.preventDefault();
-            login($("#login-username").val(), $("#login-password").val());
-        });
+        // Turn off login for now. Don't need it for searching public repos.
+        login();
         
-        $("#login-username").focus();
+//        $("#login-form").submit(function (event) {
+//            event.preventDefault();
+//            login($("#login-username").val(), $("#login-password").val());
+//        });
+//        
+//        $("#login-username").focus();
     }
     
     init();
