@@ -58,7 +58,6 @@ define(function (require, exports, module) {
     function sendRepoInfoRequest(user, repo, infoType, params) {
         var result = $.Deferred();
         params = params || {};
-        // TODO: get all pages, or figure out some other pagination strategy
         params.per_page = params.per_page || 100;
         sendRequest(constructUriPath(['repos', user, repo, infoType]), {
             data: params
