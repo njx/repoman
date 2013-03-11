@@ -51,7 +51,7 @@ define(function (require, exports, module) {
             }
         };
         settings.dataType = "json";
-        return accumulatePages("https://localhost:8080/api" + path, settings);
+        return accumulatePages("/api" + path, settings);
     }
     
     function sendRepoInfoRequest(user, repo, infoType, params) {
