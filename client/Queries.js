@@ -165,8 +165,8 @@ define(function (require, exports, module) {
         
         events: {
             "click .query-delete": "deleteModel",
-            "click .query-leaf-value": "editValue",
-            "change input": "commitEdit",
+            "click .query-leaf-value.mode-view": "editValue",
+            "change input": "maybeHandleChange",
             "keypress input": "maybeCommit"
         },
         
@@ -174,6 +174,8 @@ define(function (require, exports, module) {
             this.template = Handlebars.compile($("#t-query-leaf").html());
             this.mode = "view";
             this.model.on("destroy", this.remove, this);
+            this.gotChange = false;
+            this.processedChange = false;
         },
         
         render: function () {
@@ -201,13 +203,37 @@ define(function (require, exports, module) {
             var self = this;
             if (this.mode !== "edit") {
                 this.mode = "edit";
+                this.$(".query-leaf-value").removeClass("mode-view").addClass("mode-edit");
                 this.editor = $(this.make("input", {
                     "type": "text",
-                    "value": this.model.getValue()
+                    "value": this.model.getValue(),
+                    "autocomplete": "off"
                 }));
                 Suggestions.attach(this.editor);
                 this.$(".query-value").empty().append(this.editor);
                 FocusManager.setFocus(this.editor);
+            }
+        },
+        
+        maybeHandleChange: function () {
+            // This is kind of a gross hack. The Bootstrap typeahead plugin triggers a "change"
+            // event on the text input field when the user clicks on an item in the list. However,
+            // the act of clicking on the item first causes the text input's own native change
+            // event to fire before the list receives the click. If we were to commit the edit
+            // immediately on the first change event, we'd destroy the editor and the typeahead
+            // before it gets the chance to handle the click. So, instead, we wait a bit after
+            // receiving a change event to see if we get another one, and let the last one win.
+            if (this.gotChange) {
+                // Either this is the second change, or we timed out. If we haven't already,
+                // go ahead and commit.
+                if (!this.processedChange) {
+                    this.gotChange = false;
+                    this.processedChange = true;
+                    this.commitEdit();
+                }
+            } else {
+                this.gotChange = true;
+                setTimeout(this.maybeHandleChange.bind(this), 500);
             }
         },
         
@@ -257,6 +283,9 @@ define(function (require, exports, module) {
                 attrs.negated = negated;
                 this.model.set(attrs);
                 this.mode = "view";
+                this.editor = null;
+                this.gotChange = this.processedChange = false;
+                this.$(".query-leaf-value").removeClass("mode-edit").addClass("mode-view");
                 this.render();
             }
         },
