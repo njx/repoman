@@ -154,6 +154,7 @@ define(function (require, exports, module) {
         Suggestions.setRepos(repos);
         
         repos.add(new Models.Repo({user: "adobe", repo: "brackets"}));
+        repos.add(new Models.Repo({user: "adobe", repo: "brackets-shell"}));
         
         // Turn off login for now. Don't need it for searching public repos.
         login();
