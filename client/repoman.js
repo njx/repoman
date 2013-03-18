@@ -16,11 +16,6 @@ define(function (require, exports, module) {
             children: new Queries.Queries([
                 new Queries.Query({
                     type: "is",
-                    property: "state",
-                    value: "open"
-                }),
-                new Queries.Query({
-                    type: "is",
                     property: "pull_request.html_url",
                     value: null
                 }),

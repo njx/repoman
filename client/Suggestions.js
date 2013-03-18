@@ -23,7 +23,7 @@ define(function (require, exports, module) {
     function initItems() {
         if (!initDeferred) {
             initDeferred = new $.Deferred();
-            var result = ["pull_request", "state=open", "state=closed", "assignee=null"],
+            var result = ["pull_request", "assignee=null"],
                 promises = [];
             
             repos.each(function (repo) {
