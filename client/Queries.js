@@ -111,7 +111,7 @@ define(function (require, exports, module) {
                 break;
             }
             
-            if (query.get("negated")) {
+            if (query.get("negated") === true) {
                 result = !result;
             }
             return result;
@@ -125,7 +125,7 @@ define(function (require, exports, module) {
             if (this.get("type") === "incomplete") {
                 return "";
             }
-            return (this.get("negated") ? "!(" : "") + this.get("property") + " " + this.get("type") + (this.get("negated") ? ")" : "");
+            return (this.get("negated") === true ? "!(" : "") + this.get("property") + " " + this.get("type") + (this.get("negated") === true ? ")" : "");
         },
         
         getValue: function () {
@@ -141,6 +141,14 @@ define(function (require, exports, module) {
             if (this.get("type") === "incomplete" && attrs.type !== "incomplete") {
                 this.trigger("completing", this);
             }
+        },
+        
+        toJSONDeep: function () {
+            var result = this.toJSON();
+            if (result.children) {
+                result.children = result.children.toJSONDeep();
+            }
+            return result;
         }
     });
     
@@ -157,6 +165,12 @@ define(function (require, exports, module) {
             if (index !== -1) {
                 this.add(new Query({type: "incomplete"}), {at: index + 1});
             }
+        },
+        
+        toJSONDeep: function () {
+            return this.map(function (child) {
+                return child.toJSONDeep();
+            });
         }
     });
     
