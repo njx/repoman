@@ -3,7 +3,8 @@
 
 var https = require("https"),
     fs = require("fs"),
-    mime = require("mime");
+    mime = require("mime"),
+    url = require("url");
 
 var serverOptions = {
     key: fs.readFileSync("keys/server-key.pem"),
@@ -40,20 +41,22 @@ https.createServer(serverOptions, function (request, response) {
             proxy_request.end();
         });
     } else {
-        if (request.url === "/") {
-            request.url = "/index.html";
+        var pathname = url.parse(request.url).pathname;
+        if (pathname === "/") {
+            pathname = "/index.html";
         }
+        pathname = "client" + pathname;
         
         var content;
         try {
-            content = fs.readFileSync("client" + request.url);
+            content = fs.readFileSync(pathname);
         } catch (e) {
             response.writeHead(404);
             response.end();
         }
 
         if (content !== undefined) {
-            response.writeHead(200, {"Content-Type": mime.lookup(request.url)});
+            response.writeHead(200, {"Content-Type": mime.lookup(pathname)});
             response.write(content);
             response.end();
         }

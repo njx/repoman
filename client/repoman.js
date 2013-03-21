@@ -24,6 +24,7 @@ define(function (require, exports, module) {
                 })
             ])
         }),
+        queryView,
         resultCache,
         refreshing = false;
     
@@ -71,6 +72,7 @@ define(function (require, exports, module) {
     }
     
     function updateQueryResults() {
+        history.pushState({}, document.title, location.pathname + "?" + $.param(query.toJSONDeep()));
         if (!resultCache) {
             if (!refreshing) {
                 refreshIssues();
@@ -120,6 +122,42 @@ define(function (require, exports, module) {
         });
     }
     
+    function createQueryModel(root) {
+        if (root.children) {
+            root.children = new Queries.Queries(_.map(root.children, function (child) {
+                return createQueryModel(child);
+            }));
+        }
+        return new Queries.Query(root);
+    }
+    
+    function setNewQuery() {
+        if (query) {
+            // TODO: dumb
+            query.off("all");
+        }
+        if (queryView) {
+            queryView.remove();
+        }
+        queryView = new Queries.QueryView({model: query});
+        $("#query-view").append(queryView.render().el);
+        query.on("all", function () {
+            updateQueryResults();
+        });
+    }
+    
+    function updateQueryFromURL() {
+        var queryStr = location.search;
+        if (queryStr) {
+            if (queryStr.charAt(0) === "?") {
+                queryStr = queryStr.slice(1);
+            }
+            query = createQueryModel($.deparam(queryStr));
+            setNewQuery();
+        }
+        updateQueryResults();
+    }
+    
     function login(username, password) {
         GithubService.setUserInfo(username, password);
         $(".container").css({
@@ -129,11 +167,8 @@ define(function (require, exports, module) {
         $("#login-page").hide();
         $("#issues-page").show();
 
-        $("#query-view").append(new Queries.QueryView({model: query}).render().el);
+        setNewQuery();
         Queries.FocusManager.refreshFocus();
-        query.on("all", function () {
-            updateQueryResults();
-        });
     
         repos.on("all", function () {
             refreshIssues();
@@ -142,7 +177,11 @@ define(function (require, exports, module) {
             refreshIssues();
         });
         
-        refreshIssues();
+        $(window).on("popstate", function () {
+            updateQueryFromURL();
+        });
+        
+        updateQueryFromURL();
     }
     
     function init() {
