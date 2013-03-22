@@ -68,12 +68,13 @@
                 <tbody>
                     {{#each issues}}
                         <tr>
-                            <td class="numbers"><a href="{{html_url}}" target="_blank">#{{number}}</a></td>
+                            <td class="numbers"><a href="{{html_url}}" target="_blank">#{{number}}</a><br>
+                                {{#if pull_request.html_url}}<span class="type-pull">pull</span>{{else}}<span class="type-bug">bug</span>{{/if}}
+                            </td>
                             <td class="titles">
-                                {{#if pull_request.html_url}}<span class="pull-request">Pull Request: </span>{{/if}}
                                 <a href="{{html_url}}" target="_blank"><span class="issue-title">{{title}}</span></a>
                                 {{#each labels}}<div class="issue-label" style="background-color: #{{color}}; color: {{text_color}};">{{name}}</div>{{/each}}<br>
-                                {{#if milestone}}<span class="milestone">{{milestone.title}}</span>{{/if}}
+                                <span class="submitter">by {{user.login}}</span> {{#if milestone}}<span class="milestone">{{milestone.title}}</span>{{/if}}
                             </td>
                             <td class="assignees"><img class="assignee" src="{{assignee.avatar_url}}"></td>
                         </tr>

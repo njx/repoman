@@ -114,7 +114,7 @@ html, body {
     line-height: 1em;
     font-size: 0.9em;
     border-radius: 3px;
-    padding: 5px;
+    padding: 4px;
     margin-right: 5px;
 }
 
@@ -137,16 +137,23 @@ img.assignee {
     color: #333;
 }
 
-.pull-request {
-    font-weight: bold;
+.submitter {
     color: #999;
+}
+
+.type-pull {
+    color: #afd3af;
+}
+.type-bug {
+    color: #efbebe;
 }
 
 .milestone {
     display: inline-block;
     margin-right: 5px;
     font-weight: bold;
-    color: #999;
+    color: #333;
+    float: right;
 }
 
 /*-----------------------*
