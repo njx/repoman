@@ -12,6 +12,12 @@ var serverOptions = {
 
 var GITHUB_API = "api.github.com";
 
+var config;
+
+if (fs.existsSync("config.json")) {
+    config = JSON.parse(fs.readFileSync("config.json"));
+}
+
 https.createServer(serverOptions, function (request, response) {
     "use strict";
     
@@ -23,6 +29,11 @@ https.createServer(serverOptions, function (request, response) {
             path: matches[1],
             headers: request.headers
         };
+        if (config) {
+            reqOptions.path += (reqOptions.path.indexOf("?") === -1 ? "?" : "&") +
+                "client_id=" + config.client_id +
+                "&client_secret=" + config.client_secret;
+        }
         var proxy_request = https.request(reqOptions);
         proxy_request.addListener('response', function (proxy_response) {
             proxy_response.addListener('data', function (chunk) {

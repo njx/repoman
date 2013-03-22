@@ -13,3 +13,8 @@ You'll also need to install [Node](http://nodejs.org).
 
 Once that's done, just cd into the repoman root folder and do `node index.js`, then hit 
 https://localhost:8080/ from a web browser.
+
+By default, the GitHub API rate limit for unauthenticated requests is 60 per hour. If
+you want to use the higher 5000-per-hour rate limit, register an OAuth app with GitHub,
+and create a "config.json" file next to index.js that contains your app's client_id 
+and client_secret.
