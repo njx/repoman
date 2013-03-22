@@ -122,13 +122,7 @@ define(function (require, exports, module) {
     
     function login(username, password) {
         GithubService.setUserInfo(username, password);
-        $(".container").css({
-            "margin-top": "10px",
-            "min-height": "100%"
-        });
-        $("#login-page").hide();
-        $("#issues-page").show();
-
+        
         $("#query-view").append(new Queries.QueryView({model: query}).render().el);
         Queries.FocusManager.refreshFocus();
         query.on("all", function () {

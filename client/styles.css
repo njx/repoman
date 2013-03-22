@@ -22,9 +22,10 @@ html, body {
 .container {
     background: #eee;
     padding: 24px;
-    margin-top: 200px;
+    margin-top: 10px;
     width: 90%;
     max-width: 900px;
+    min-height: 100%;
 
     -webkit-transition: margin-top 0.25s ease-out;
     -moz-transition: margin-top 0.25s ease-out;
