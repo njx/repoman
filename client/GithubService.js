@@ -27,6 +27,7 @@ define(function (require, exports, module) {
         xhr = $.ajax(uri, settings)
             .done(function (data) {
                 results.push(data);
+                deferred.notify(data.length);
                 
                 var link = xhr.getResponseHeader("Link"), match;
                 if (link && (match = link.match(/<([^>]*)>; rel="next"/)) !== null) {
@@ -61,6 +62,8 @@ define(function (require, exports, module) {
         params.per_page = params.per_page || 100;
         sendRequest(constructUriPath(['repos', user, repo, infoType]), {
             data: params
+        }).progress(function (incr) {
+            result.notify(incr);
         }).done(function (allResponses) {
             var flattened = [];
             allResponses.forEach(function (response) {

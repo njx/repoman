@@ -106,10 +106,15 @@ define(function (require, exports, module) {
         // spinners, then fill as data comes in
         refreshing = true;
         $("#spinner").show();
-        var spinner = new Spinner({color: "#fff", width: 4}).spin($("#spinner").get(0));
-        var promises = [];
+        var spinner = new Spinner({color: "#fff", width: 4, radius: 12}).spin($("#spinner").get(0));
+        var promises = [], fetched = 0;
         repos.each(function (repo) {
-            promises.push(repo.fetchIssues());
+            var promise = repo.fetchIssues();
+            promises.push(promise);
+            promise.progress(function (incr) {
+                fetched += incr;
+                $("#spinner .issue-progress").text(fetched);
+            });
         });
         $.when.apply(window, promises).then(function () {
             spinner.stop();

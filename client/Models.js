@@ -26,6 +26,9 @@ define(function (require, exports, module) {
             var self = this;
             var result = new $.Deferred();
             GithubService.sendRepoInfoRequest(this.get("user"), this.get("repo"), "issues")
+                .progress(function (incr) {
+                    result.notify(incr);
+                })
                 .done(function (response) {
                     var issues = new Issues();
                     _.each(response, function (issue) {
