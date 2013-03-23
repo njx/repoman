@@ -26,6 +26,7 @@ define(function (require, exports, module) {
         }),
         queryView,
         resultCache,
+        queryResultsInvalid = false,
         refreshing = false;
     
     // From http://stackoverflow.com/questions/5623838/rgb-to-hex-and-hex-to-rgb
@@ -71,8 +72,10 @@ define(function (require, exports, module) {
         return issue;
     }
     
-    function updateQueryResults() {
-        history.pushState({}, document.title, location.pathname + "?" + $.param(query.toJSONDeep()));
+    function updateQueryResults(doPushState) {
+        if (doPushState) {
+            history.pushState({}, document.title, location.pathname + "?" + $.param(query.toJSONDeep()));
+        }
         if (!resultCache) {
             if (!refreshing) {
                 refreshIssues();
@@ -100,6 +103,7 @@ define(function (require, exports, module) {
                 }
             });
         }
+        queryResultsInvalid = false;
     }
     
     // TODO: factor into IssuesView module
@@ -123,7 +127,7 @@ define(function (require, exports, module) {
             $("#spinner").hide();
             resultCache = Array.prototype.slice.call(arguments);
             refreshing = false;
-            updateQueryResults();
+            updateQueryResults(false);
         });
     }
     
@@ -134,6 +138,15 @@ define(function (require, exports, module) {
             }));
         }
         return new Queries.Query(root);
+    }
+    
+    function invalidateQueryResults() {
+        if (!queryResultsInvalid) {
+            queryResultsInvalid = true;
+            setTimeout(function () {
+                updateQueryResults(true);
+            }, 50);
+        }
     }
     
     function setNewQuery() {
@@ -147,11 +160,11 @@ define(function (require, exports, module) {
         queryView = new Queries.QueryView({model: query});
         $("#query-view").append(queryView.render().el);
         query.on("all", function () {
-            updateQueryResults();
+            invalidateQueryResults();
         });
     }
     
-    function updateQueryFromURL() {
+    function updateQueryFromURL(doPushState) {
         var queryStr = location.search;
         if (queryStr) {
             if (queryStr.charAt(0) === "?") {
@@ -160,7 +173,7 @@ define(function (require, exports, module) {
             query = createQueryModel($.deparam(queryStr, true));
             setNewQuery();
         }
-        updateQueryResults();
+        updateQueryResults(doPushState);
     }
     
     function login(username, password) {
@@ -177,10 +190,10 @@ define(function (require, exports, module) {
         });
         
         $(window).on("popstate", function () {
-            updateQueryFromURL();
+            updateQueryFromURL(false);
         });
         
-        updateQueryFromURL();
+        updateQueryFromURL(true);
     }
     
     function init() {
