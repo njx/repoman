@@ -157,7 +157,7 @@ define(function (require, exports, module) {
             if (queryStr.charAt(0) === "?") {
                 queryStr = queryStr.slice(1);
             }
-            query = createQueryModel($.deparam(queryStr));
+            query = createQueryModel($.deparam(queryStr, true));
             setNewQuery();
         }
         updateQueryResults();
