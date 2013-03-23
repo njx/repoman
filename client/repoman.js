@@ -11,7 +11,14 @@ define(function (require, exports, module) {
     
     var issuesTemplate = Handlebars.compile($("#t-issues-summary").html()),
         repos = new Models.Repos(),
-        query = new Queries.Query({
+        query,
+        queryView,
+        resultCache,
+        queryResultsInvalid = false,
+        refreshing = false;
+    
+    function makeDefaultQuery() {
+        return new Queries.Query({
             type: "and",
             children: new Queries.Queries([
                 new Queries.Query({
@@ -23,11 +30,8 @@ define(function (require, exports, module) {
                     type: "incomplete"
                 })
             ])
-        }),
-        queryView,
-        resultCache,
-        queryResultsInvalid = false,
-        refreshing = false;
+        });
+    }
     
     // From http://stackoverflow.com/questions/5623838/rgb-to-hex-and-hex-to-rgb
     function hexToRgb(hex) {
@@ -164,24 +168,23 @@ define(function (require, exports, module) {
         });
     }
     
-    function updateQueryFromURL(doPushState) {
+    function updateQueryFromURL() {
         var queryStr = location.search;
         if (queryStr) {
             if (queryStr.charAt(0) === "?") {
                 queryStr = queryStr.slice(1);
             }
             query = createQueryModel($.deparam(queryStr, true));
-            setNewQuery();
+        } else {
+            query = makeDefaultQuery();
         }
-        updateQueryResults(doPushState);
+        setNewQuery();
+        updateQueryResults(false);
     }
     
     function login(username, password) {
         GithubService.setUserInfo(username, password);
 
-        setNewQuery();
-        Queries.FocusManager.refreshFocus();
-    
         repos.on("all", function () {
             refreshIssues();
         });
@@ -190,10 +193,11 @@ define(function (require, exports, module) {
         });
         
         $(window).on("popstate", function () {
-            updateQueryFromURL(false);
+            updateQueryFromURL();
         });
         
-        updateQueryFromURL(true);
+        updateQueryFromURL();
+        Queries.FocusManager.refreshFocus();
     }
     
     function init() {
