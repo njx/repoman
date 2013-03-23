@@ -19,6 +19,15 @@ html, body {
     height: 100%;
 }
 
+.page-header {
+    text-align: center;
+    text-shadow: 0 1px #fff;
+}
+.page-header .subtitle, .page-header .subtitle a {
+    font-weight: normal;
+    color: #999;
+}
+
 .container {
     background: #eee;
     padding: 24px;
@@ -191,7 +200,7 @@ img.assignee {
 .query-refresh {
     float: right;
     width: 60px;
-    height: 61px;
+    height: 63px;
     border-left: 1px solid #ddd;
     background-color: #fafafa;
     background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#ffffff), color-stop(25%, #ffffff), to(#e6e6e6));
