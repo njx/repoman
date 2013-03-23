@@ -207,7 +207,8 @@ define(function (require, exports, module) {
                 this.editor = $(this.make("input", {
                     "type": "text",
                     "value": this.model.getValue(),
-                    "autocomplete": "off"
+                    "autocomplete": "off",
+                    "placeholder": "label, user, milestone, ..."
                 }));
                 Suggestions.attach(this.editor);
                 this.$(".query-value").empty().append(this.editor);

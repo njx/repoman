@@ -274,7 +274,29 @@ img.assignee {
     margin: -7px -4px -4px -4px;
     font-size: 14px;
     font-weight: bold;
-    width: 150px;
+    width: 155px;
+}
+
+/* These placeholder rules don't seem to work if I put all the selectors in one rule. */
+.query-leaf-value input::-webkit-input-placeholder {
+    color: #ccc;
+    font-weight: normal;
+    font-style: italic;
+}
+.query-leaf-value input:-moz-placeholder {
+    color: #ccc;
+    font-weight: normal;
+    font-style: italic;
+}
+.query-leaf-value input::-moz-placeholder {
+    color: #ccc;
+    font-weight: normal;
+    font-style: italic;
+}
+.query-leaf-value input:-ms-input-placeholder {
+    color: #ccc;
+    font-weight: normal;
+    font-style: italic;
 }
 
 .query-delete {
