@@ -29,6 +29,7 @@ html, body {
 }
 
 .container {
+    position: relative;
     background: #eee;
     padding: 24px;
     margin-top: 10px;
