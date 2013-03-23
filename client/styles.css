@@ -133,7 +133,7 @@ table .numbers {
     text-align: right;
 }
 table .assignees {
-    width: 60px;
+    width: 40px;
     text-align: center;
     vertical-align: middle;
 }
@@ -148,7 +148,7 @@ img.assignee {
     color: #333;
 }
 
-.submitter {
+.submitter, .submitter a {
     color: #999;
 }
 
