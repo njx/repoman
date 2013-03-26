@@ -147,6 +147,7 @@ html, body {
 
 table .numbers {
     text-align: right;
+    width: 50px;
 }
 table .assignees {
     width: 58px;
