@@ -34,6 +34,7 @@ define(function (require, exports, module) {
             
             $.when.apply(window, promises).then(function () {
                 result.sort();
+                result = _.uniq(result, true);
                 items = result;
                 initDeferred.resolve();
             });
