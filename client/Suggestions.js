@@ -20,8 +20,8 @@ define(function (require, exports, module) {
             });
     }
     
-    function initItems() {
-        if (!initDeferred) {
+    function initItems(force) {
+        if (!initDeferred || force) {
             initDeferred = new $.Deferred();
             var result = ["pull_request", "assignee=null"],
                 promises = [];
@@ -44,7 +44,9 @@ define(function (require, exports, module) {
     
     function setRepos(r) {
         repos = r;
-        repos.on("all", initItems);
+        repos.on("all", function () {
+            initItems(true);
+        });
     }
     
     function matcher(item) {
