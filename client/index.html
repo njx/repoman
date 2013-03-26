@@ -83,7 +83,7 @@
                                 {{#each labels}}<div class="issue-label" style="background-color: #{{color}}; color: {{text_color}};">{{name}}</div>{{/each}}<br>
                                 <span class="submitter">by <a href="https://github.com/{{user.login}}">{{user.login}}</a></span> {{#if milestone}}<span class="milestone">{{milestone.title}}</span>{{/if}}
                             </td>
-                            <td class="assignees"><a href="https://github.com/{{assignee.login}}"><img class="assignee" title="{{assignee.login}}" src="{{assignee.avatar_url}}"></a></td>
+                            <td class="assignees">{{#if assignee}}<a href="https://github.com/{{assignee.login}}"><img class="assignee" title="{{assignee.login}}" src="{{assignee.avatar_url}}"></a>{{/if}}</td>
                         </tr>
                     {{/each}}
                     </tbody>

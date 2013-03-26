@@ -148,14 +148,15 @@ table .numbers {
     text-align: right;
 }
 table .assignees {
-    width: 40px;
+    width: 58px;
     text-align: center;
     vertical-align: middle;
+    padding: 0;
 }
 
 img.assignee {
-    width: 40px;
-    height: 40px;
+    width: 58px;
+    height: 58px;
 }
 
 .issue-title {
