@@ -124,6 +124,11 @@ html, body {
 .table-bordered {
     border-radius: 0;
     background: #fff;
+    border: 1px solid #ccc;
+}
+
+.table-bordered td {
+    border-left: none;
 }
 
 .issue-labels {
