@@ -4,13 +4,13 @@
 define(function (require, exports, module) {
     "use strict";
     
-    var Models = require("Models"),
+    var Repos = require("Repos"),
         Queries = require("Queries"),
         GithubService = require("GithubService"),
         Suggestions = require("Suggestions");
     
     var issuesTemplate = Handlebars.compile($("#t-issues-summary").html()),
-        repos = new Models.Repos(),
+        repos = new Repos.Repos(),
         query,
         queryView,
         resultCache,
@@ -76,6 +76,7 @@ define(function (require, exports, module) {
         return issue;
     }
     
+    // TODO: factor into IssuesView module
     function updateQueryResults(doPushState) {
         if (doPushState) {
             history.pushState({}, document.title, location.pathname + "?" + $.param(query.toJSONDeep()));
@@ -110,7 +111,6 @@ define(function (require, exports, module) {
         queryResultsInvalid = false;
     }
     
-    // TODO: factor into IssuesView module
     function refreshIssues() {
         // TODO: instead of waiting for everything to load, add headings immediately with
         // spinners, then fill as data comes in
@@ -196,6 +196,8 @@ define(function (require, exports, module) {
             updateQueryFromURL();
         });
         
+        $("#repos-view").append(new Repos.ReposView({collection: repos}).render().el);
+        
         updateQueryFromURL();
         Queries.FocusManager.refreshFocus();
     }
@@ -203,8 +205,8 @@ define(function (require, exports, module) {
     function init() {
         Suggestions.setRepos(repos);
         
-        repos.add(new Models.Repo({user: "adobe", repo: "brackets"}));
-        repos.add(new Models.Repo({user: "adobe", repo: "brackets-shell"}));
+        repos.add(new Repos.Repo({user: "adobe", repo: "brackets"}));
+        repos.add(new Repos.Repo({user: "adobe", repo: "brackets-shell"}));
         
         // Turn off login for now. Don't need it for searching public repos.
         login();
