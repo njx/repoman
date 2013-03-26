@@ -129,6 +129,7 @@ html, body {
 
 .table-bordered td {
     border-left: none;
+    border-top: none;
 }
 
 .issue-labels {
