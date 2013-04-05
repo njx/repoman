@@ -2,6 +2,7 @@
 /*global require: true */
 
 var https = require("https"),
+    http = require("http"),
     fs = require("fs"),
     mime = require("mime"),
     url = require("url");
@@ -73,3 +74,12 @@ https.createServer(serverOptions, function (request, response) {
         }
     }
 }).listen(8080);
+
+// Redirect HTTP to HTTPS
+http.createServer(function (req, res) {
+    res.writeHead(301, {
+        'Content-Type': 'text/plain',
+        'Location': 'https://' + config.hostname + ":8080" + req.url
+    });
+    res.end('Redirecting to SSL\n');
+}).listen(8000);
