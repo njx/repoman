@@ -20,6 +20,10 @@ if (fs.existsSync("config.json")) {
     config = JSON.parse(fs.readFileSync("config.json"));
 }
 
+config.hostname = config.hostname || "localhost";
+config.redirectPort = config.redirectPort || 8000;
+config.securePort = config.securePort || 8080;
+
 https.createServer(serverOptions, function (request, response) {
     "use strict";
     
@@ -73,13 +77,13 @@ https.createServer(serverOptions, function (request, response) {
             response.end();
         }
     }
-}).listen(8080);
+}).listen(config.securePort);
 
 // Redirect HTTP to HTTPS
 http.createServer(function (req, res) {
     res.writeHead(301, {
         'Content-Type': 'text/plain',
-        'Location': 'https://' + config.hostname + ":8080" + req.url
+        'Location': 'https://' + config.hostname + ":" + config.securePort + req.url
     });
     res.end('Redirecting to SSL\n');
-}).listen(8000);
+}).listen(config.redirectPort);

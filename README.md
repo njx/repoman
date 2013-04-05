@@ -18,3 +18,8 @@ By default, the GitHub API rate limit for unauthenticated requests is 60 per hou
 you want to use the higher 5000-per-hour rate limit, register an OAuth app with GitHub,
 and create a "config.json" file next to index.js that contains your app's client_id 
 and client_secret.
+
+The config.json API may also contain:
+* hostname - name of the host we're running on
+* securePort - port to listen on for https
+* redirectPort - http port to redirect to securePort from
