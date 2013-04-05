@@ -83,7 +83,7 @@ https.createServer(serverOptions, function (request, response) {
 http.createServer(function (req, res) {
     res.writeHead(301, {
         'Content-Type': 'text/plain',
-        'Location': 'https://' + config.hostname + ":" + config.securePort + req.url
+        'Location': 'https://' + config.hostname + req.url
     });
     res.end('Redirecting to SSL\n');
 }).listen(config.redirectPort);
