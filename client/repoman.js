@@ -79,7 +79,10 @@ define(function (require, exports, module) {
     // TODO: factor into IssuesView module
     function updateQueryResults(doPushState) {
         if (doPushState) {
-            history.pushState({}, document.title, location.pathname + "?" + $.param(query.toJSONDeep()));
+            var saveQuery = _.extend({}, query.toJSONDeep());
+            saveQuery.repos = repos.filter(function (repo) { return repo.isValid(); })
+                .map(function (repo) { return repo.getFullName(); });
+            history.pushState({}, document.title, location.pathname + "?" + $.param(saveQuery));
         }
         if (!resultCache) {
             if (!refreshing) {
@@ -111,11 +114,14 @@ define(function (require, exports, module) {
         queryResultsInvalid = false;
     }
     
-    function refreshIssues() {
+    function refreshIssues(doPushState) {
         var hasValidRepo = repos.some(function (repo) {
             return repo.isValid();
         });
         if (!hasValidRepo) {
+            // All repos deleted. Just update the query results (to clear them).
+            resultCache = [];
+            updateQueryResults();
             return;
         }
         
@@ -133,6 +139,8 @@ define(function (require, exports, module) {
                     fetched += incr;
                     $("#spinner .issue-progress").text(fetched);
                 });
+            } else {
+                delete resultCache.repo;
             }
         });
         $.when.apply(window, promises).then(function () {
@@ -140,7 +148,7 @@ define(function (require, exports, module) {
             $("#spinner").hide();
             resultCache = Array.prototype.slice.call(arguments);
             refreshing = false;
-            updateQueryResults(false);
+            updateQueryResults(doPushState);
         });
     }
     
@@ -183,7 +191,14 @@ define(function (require, exports, module) {
             if (queryStr.charAt(0) === "?") {
                 queryStr = queryStr.slice(1);
             }
-            query = createQueryModel($.deparam(queryStr, true));
+            var params = $.deparam(queryStr, true);
+            if (params.repos) {
+                repos.reset(params.repos.map(function (repo) {
+                    var parts = repo.split("/");
+                    return new Repos.Repo({ user: parts[0], repo: parts[1] });
+                }));
+            }
+            query = createQueryModel(params);
         } else {
             query = makeDefaultQuery();
         }
@@ -191,11 +206,25 @@ define(function (require, exports, module) {
         updateQueryResults(false);
     }
     
+    function refreshViews() {
+        // Hide the query view if we have no valid repos
+        if (!repos.some(function (repo) { return repo.isValid(); })) {
+            $(".query-container").hide();
+        } else {
+            $(".query-container").show();
+        }
+    }
+    
     function login(username, password) {
         GithubService.setUserInfo(username, password);
 
         repos.on("all", function () {
-            refreshIssues();
+            if (repos.length === 0) {
+                // If they delete the last repo, add a new blank one.
+                repos.add(new Repos.Repo());
+            }
+            refreshViews();
+            refreshIssues(true);
         });
         $(".query-refresh").on("click", function () {
             refreshIssues();
@@ -209,6 +238,7 @@ define(function (require, exports, module) {
         
         updateQueryFromURL();
         Queries.FocusManager.refreshFocus();
+        refreshViews();
     }
     
     function init() {

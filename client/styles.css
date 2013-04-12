@@ -278,6 +278,7 @@ img.assignee {
  *-----------------------*/
 
 .query-container {
+    display: none;
     border: 1px solid #ddd;
     background: #fff;
     -webkit-box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.2) inset;
