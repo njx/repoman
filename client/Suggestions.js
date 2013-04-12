@@ -10,14 +10,18 @@ define(function (require, exports, module) {
     var repos, items, initDeferred, stringMatcher = new StringMatch.StringMatcher();
     
     function getItems(repo, itemType, queryNames, itemField, result) {
-        return GithubService.sendRepoInfoRequest(repo.get("user"), repo.get("repo"), itemType)
-            .done(function (items) {
-                items.forEach(function (item) {
-                    queryNames.forEach(function (queryName) {
-                        result.push(queryName + "=" + item[itemField]);
+        if (repo.isValid()) {
+            return GithubService.sendRepoInfoRequest(repo.get("user"), repo.get("repo"), itemType)
+                .done(function (items) {
+                    items.forEach(function (item) {
+                        queryNames.forEach(function (queryName) {
+                            result.push(queryName + "=" + item[itemField]);
+                        });
                     });
                 });
-            });
+        } else {
+            return new $.Deferred().resolve();
+        }
     }
     
     function initItems(force) {

@@ -16,7 +16,7 @@ define(function (require, exports, module) {
         },
         
         getFullName: function () {
-            if (!this.get("user") || !this.get("repo")) {
+            if (!this.isValid()) {
                 return "";
             } else {
                 return this.get("user") + "/" + this.get("repo");
@@ -100,6 +100,12 @@ define(function (require, exports, module) {
             this.collection.each(function (model) {
                 self.$el.append(new RepoView({model: model}).render().el);
             });
+            
+            var addButton = $("<span class='add-button'/>")
+                .click(function () {
+                    self.collection.add(new Repo());
+                })
+                .appendTo(this.$el);
             return this;
         }
     });
