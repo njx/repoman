@@ -1,5 +1,5 @@
 /*jslint vars: true, plusplus: true, devel: true, browser: true, nomen: true, indent: 4, maxerr: 50 */
-/*global define, Backbone, _, $ */
+/*global define, Backbone, _, $, Handlebars */
 
 define(function (require, exports, module) {
     "use strict";
@@ -16,7 +16,15 @@ define(function (require, exports, module) {
         },
         
         getFullName: function () {
-            return this.get("user") + "/" + this.get("repo");
+            if (!this.get("user") || !this.get("repo")) {
+                return "";
+            } else {
+                return this.get("user") + "/" + this.get("repo");
+            }
+        },
+        
+        isValid: function () {
+            return !!(this.get("user") && this.get("repo"));
         },
         
         fetchIssues: function () {
@@ -54,9 +62,13 @@ define(function (require, exports, module) {
         render: function () {
             this.$el.html(
                 this.template({
-                    value: this.model.getDisplayValue(),
+                    value: this.model.getDisplayValue()
                 })
             );
+            
+            if (!this.model.get("user") || !this.model.get("repo")) {
+                this.editValue();
+            }
             return this;
         },
 

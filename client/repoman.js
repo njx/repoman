@@ -112,6 +112,13 @@ define(function (require, exports, module) {
     }
     
     function refreshIssues() {
+        var hasValidRepo = repos.some(function (repo) {
+            return repo.isValid();
+        });
+        if (!hasValidRepo) {
+            return;
+        }
+        
         // TODO: instead of waiting for everything to load, add headings immediately with
         // spinners, then fill as data comes in
         refreshing = true;
@@ -119,12 +126,14 @@ define(function (require, exports, module) {
         var spinner = new Spinner({color: "#fff", width: 4, radius: 12}).spin($("#spinner").get(0));
         var promises = [], fetched = 0;
         repos.each(function (repo) {
-            var promise = repo.fetchIssues();
-            promises.push(promise);
-            promise.progress(function (incr) {
-                fetched += incr;
-                $("#spinner .issue-progress").text(fetched);
-            });
+            if (repo.isValid()) {
+                var promise = repo.fetchIssues();
+                promises.push(promise);
+                promise.progress(function (incr) {
+                    fetched += incr;
+                    $("#spinner .issue-progress").text(fetched);
+                });
+            }
         });
         $.when.apply(window, promises).then(function () {
             spinner.stop();
@@ -205,8 +214,9 @@ define(function (require, exports, module) {
     function init() {
         Suggestions.setRepos(repos);
         
-        repos.add(new Repos.Repo({user: "adobe", repo: "brackets"}));
-        repos.add(new Repos.Repo({user: "adobe", repo: "brackets-shell"}));
+        // Add an empty repo so the user can set which repo to search.
+        // TODO: save in URL
+        repos.add(new Repos.Repo());
         
         // Turn off login for now. Don't need it for searching public repos.
         login();
