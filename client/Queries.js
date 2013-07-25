@@ -4,26 +4,9 @@
 define(function (require, exports, module) {
     "use strict";
     
-    var Suggestions = require("Suggestions");
-    
-    // We use this to make sure that focus gets set properly once query views have been created.
-    var FocusManager = (function () {
-        var currentFocus = null;
-        
-        var refreshFocus = function () {
-            currentFocus.focus().select();
-        };
-            
-        var setFocus = function (editor) {
-            currentFocus = editor;
-            refreshFocus();
-        };
-        
-        return {
-            refreshFocus: refreshFocus,
-            setFocus: setFocus
-        };
-    }());
+    var Suggestions = require("Suggestions"),
+        EditableView = require("EditableView").EditableView,
+        FocusManager = require("FocusManager");
     
     var Query = Backbone.Model.extend({
         initialize: function () {
@@ -128,7 +111,7 @@ define(function (require, exports, module) {
             return (this.get("negated") === true ? "!(" : "") + this.get("property") + " " + this.get("type") + (this.get("negated") === true ? ")" : "");
         },
         
-        getValue: function () {
+        getDisplayValue: function () {
             if (this.get("value") === null) {
                 return "null";
             } else {
@@ -174,32 +157,29 @@ define(function (require, exports, module) {
         }
     });
     
-    var QueryLeafView = Backbone.View.extend({
+    var QueryLeafView = EditableView.extend({
         className: "query-leaf",
-        
-        events: {
-            "click .query-delete": "deleteModel",
-            "click .query-leaf-value.mode-view": "editValue",
-            "change input": "maybeHandleChange",
-            "keypress input": "maybeCommit"
-        },
         
         initialize: function () {
             this.template = Handlebars.compile($("#t-query-leaf").html());
-            this.mode = "view";
-            this.model.on("destroy", this.remove, this);
             this.gotChange = false;
             this.processedChange = false;
+            this.placeholder = "label, user, milestone, ...";
+            
+            this.$el.on("change", "input", this.maybeHandleChange.bind(this));
+            
+            EditableView.prototype.initialize.apply(this, arguments);
         },
         
         render: function () {
             this.$el.html(
                 this.template({
                     label: this.model.get("type") === "incomplete" ? "" : this.model.getLabel(),
-                    value: this.model.getValue(),
+                    value: this.model.getDisplayValue(),
                     complete: this.model.get("type") !== "incomplete"
                 })
             );
+            this.$editorContainer = this.$el.find(".editable-value");
             if (this.model.get("type") === "incomplete") {
                 this.$el.removeClass("complete").addClass("incomplete");
             } else {
@@ -208,25 +188,11 @@ define(function (require, exports, module) {
             this.$el.addClass("clearfix");
             return this;
         },
-        
-        deleteModel: function () {
-            this.model.destroy();
-        },
-        
+                
         editValue: function () {
-            var self = this;
-            if (this.mode !== "edit") {
-                this.mode = "edit";
-                this.$(".query-leaf-value").removeClass("mode-view").addClass("mode-edit");
-                this.editor = $(this.make("input", {
-                    "type": "text",
-                    "value": this.model.getValue(),
-                    "autocomplete": "off",
-                    "placeholder": "label, user, milestone, ..."
-                }));
+            EditableView.prototype.editValue.apply(this, arguments);
+            if (this.mode === "edit") {
                 Suggestions.attach(this.editor);
-                this.$(".query-value").empty().append(this.editor);
-                FocusManager.setFocus(this.editor);
             }
         },
         
@@ -297,16 +263,9 @@ define(function (require, exports, module) {
                 }
                 attrs.negated = negated;
                 this.model.set(attrs);
-                this.mode = "view";
-                this.editor = null;
+
                 this.gotChange = this.processedChange = false;
-                this.$(".query-leaf-value").removeClass("mode-edit").addClass("mode-view");
-                this.render();
-            }
-        },
-        maybeCommit: function (e) {
-            if (e.keyCode === 13) {
-                this.commitEdit();
+                this.finishEdit();
             }
         }
     });

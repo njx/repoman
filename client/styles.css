@@ -83,6 +83,37 @@ html, body {
     display: none;
 }
 
+/*----------------------*
+ *------- Repos --------*
+ *----------------------*/
+
+#repos-view {
+    text-align: center;
+    margin-top: -20px;
+    margin-bottom: 20px;
+}
+
+#repos-view .repo-view-label {
+    display: inline-block;
+    vertical-align: middle;
+    font-weight: bold;
+}
+
+#repos-view .repo {
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 10px;
+}
+
+#repos-view .add-button {
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 6px;
+    background: url(images/add.svg) 0 0 / 100% 100% no-repeat;
+    width: 24px;
+    height: 24px;
+}
+
 /*-----------------------*
  *------- Issues --------*
  *-----------------------*/
@@ -101,7 +132,7 @@ html, body {
     border-top-right-radius: 8px;
 }
 
-.repo {
+.issues-head .repo {
     float: left;
     color: #fff;
     text-shadow: #000 0 -1px 0;
@@ -196,14 +227,69 @@ img.assignee {
     float: right;
 }
 
+/*----------------------*
+ *--- Editable view ----*
+ *----------------------*/
+
+.editable-item {
+    border-radius: 3px;
+    padding: 6px;
+    font-weight: bold;
+    background: #ddd;
+}
+
+.editable-item input {
+    margin: -7px -4px -4px -4px;
+    font-size: 14px;
+    font-weight: bold;
+    width: 155px;
+}
+
+/* These placeholder rules don't seem to work if I put all the selectors in one rule. */
+.editable-item input::-webkit-input-placeholder {
+    color: #ccc;
+    font-weight: normal;
+    font-style: italic;
+}
+.editable-item input:-moz-placeholder {
+    color: #ccc;
+    font-weight: normal;
+    font-style: italic;
+}
+.editable-item input::-moz-placeholder {
+    color: #ccc;
+    font-weight: normal;
+    font-style: italic;
+}
+.editable-item input:-ms-input-placeholder {
+    color: #ccc;
+    font-weight: normal;
+    font-style: italic;
+}
+
+.editable-value {
+    float: left;
+}
+
+.delete {
+    float: right;
+    margin-left: 5px;
+    background: url(images/sprites.png) no-repeat -18px 0;
+    width: 18px;
+    height: 18px;
+}
+.delete:hover {
+    background-position: -36px 0;
+}
+
 /*-----------------------*
  *------- Queries -------*
  *-----------------------*/
 
 .query-container {
+    display: none;
     border: 1px solid #ddd;
     background: #fff;
-    margin-top: -18px;
     -webkit-box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.2) inset;
     -moz-box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.2) inset;
     box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.2) inset;
@@ -222,14 +308,13 @@ img.assignee {
     width: 60px;
     height: 63px;
     border-left: 1px solid #ddd;
-    background-color: #fafafa;
-    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#ffffff), color-stop(25%, #ffffff), to(#e6e6e6));
-    background-image: -webkit-linear-gradient(#ffffff, #ffffff 25%, #e6e6e6);
-    background-image: -moz-linear-gradient(top, #ffffff, #ffffff 25%, #e6e6e6);
-    background-image: -ms-linear-gradient(#ffffff, #ffffff 25%, #e6e6e6);
-    background-image: -o-linear-gradient(#ffffff, #ffffff 25%, #e6e6e6);
-    background-image: linear-gradient(#ffffff, #ffffff 25%, #e6e6e6);
-    background-repeat: no-repeat;
+    background: url(images/refresh.svg) 50% 50% / 48px 48px no-repeat, #fafafa;
+    background: url(images/refresh.svg) 50% 50% / 48px 48px no-repeat, -webkit-gradient(linear, 0 0, 0 100%, from(#ffffff), color-stop(25%, #ffffff), to(#e6e6e6)) 50% 50% / 60px 63px;
+    background: url(images/refresh.svg) 50% 50% / 48px 48px no-repeat, -webkit-linear-gradient(#ffffff, #ffffff 25%, #e6e6e6) 50% 50% / 60px 63px;
+    background: url(images/refresh.svg) 50% 50% / 48px 48px no-repeat, -moz-linear-gradient(top, #ffffff, #ffffff 25%, #e6e6e6) 50% 50% / 60px 63px;
+    background: url(images/refresh.svg) 50% 50% / 48px 48px no-repeat, -ms-linear-gradient(#ffffff, #ffffff 25%, #e6e6e6) 50% 50% / 60px 63px;
+    background: url(images/refresh.svg) 50% 50% / 48px 48px no-repeat, -o-linear-gradient(#ffffff, #ffffff 25%, #e6e6e6) 50% 50% / 60px 63px;
+    background: url(images/refresh.svg) 50% 50% / 48px 48px no-repeat, linear-gradient(#ffffff, #ffffff 25%, #e6e6e6) 50% 50% / 60px 63px;
     
     -webkit-touch-callout: none;
     -webkit-user-select: none;
@@ -240,16 +325,10 @@ img.assignee {
     user-select: none;
 }
 .query-refresh:hover {
-    background-color: #e6e6e6;
-    background-position: 0 -15px;
-    -webkit-transition: background-position 0.1s linear;
-    -moz-transition: background-position 0.1s linear;
-    -ms-transition: background-position 0.1s linear;
-    -o-transition: background-position 0.1s linear;
-    transition: background-position 0.1s linear;
+    background: url(images/refresh.svg) 50% 50% / 48px 48px no-repeat, #e6e6e6;
 }
 .query-refresh:active {
-    background-image:none;
+    background: url(images/refresh.svg) 50% 50% / 48px 48px no-repeat, #ffffff;
     -webkit-box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15),0 1px 2px rgba(0, 0, 0, 0.05);
     -moz-box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15),0 1px 2px rgba(0, 0, 0, 0.05);
     box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15),0 1px 2px rgba(0, 0, 0, 0.05);
@@ -280,58 +359,6 @@ img.assignee {
 .query-leaf-label {
     color: #999;
     height: 20px;
-}
-
-.query-leaf-value {
-    border-radius: 3px;
-    padding: 6px;
-    font-weight: bold;
-    vertical-align: middle;
-    background: #ddd;
-}
-
-.query-leaf-value input {
-    margin: -7px -4px -4px -4px;
-    font-size: 14px;
-    font-weight: bold;
-    width: 155px;
-}
-
-/* These placeholder rules don't seem to work if I put all the selectors in one rule. */
-.query-leaf-value input::-webkit-input-placeholder {
-    color: #ccc;
-    font-weight: normal;
-    font-style: italic;
-}
-.query-leaf-value input:-moz-placeholder {
-    color: #ccc;
-    font-weight: normal;
-    font-style: italic;
-}
-.query-leaf-value input::-moz-placeholder {
-    color: #ccc;
-    font-weight: normal;
-    font-style: italic;
-}
-.query-leaf-value input:-ms-input-placeholder {
-    color: #ccc;
-    font-weight: normal;
-    font-style: italic;
-}
-
-.query-delete {
-    float: right;
-    margin-left: 5px;
-    background: url(images/sprites.png) no-repeat -18px 0;
-    width: 18px;
-    height: 18px;
-}
-.query-delete:hover {
-    background-position: -36px 0;
-}
-
-.query-value {
-    float: left;
 }
 
 .smart_autocomplete_container {
