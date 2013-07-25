@@ -80,8 +80,9 @@ define(function (require, exports, module) {
     function updateQueryResults(doPushState) {
         if (doPushState) {
             var saveQuery = _.extend({}, query.toJSONDeep());
-            saveQuery.repos = repos.filter(function (repo) { return repo.isValid(); })
-                .map(function (repo) { return repo.getFullName(); });
+            // TODO: change-repos
+//            saveQuery.repos = repos.filter(function (repo) { return repo.isValid(); })
+//                .map(function (repo) { return repo.getFullName(); });
             history.pushState({}, document.title, location.pathname + "?" + $.param(saveQuery));
         }
         if (!resultCache) {
@@ -192,12 +193,13 @@ define(function (require, exports, module) {
                 queryStr = queryStr.slice(1);
             }
             var params = $.deparam(queryStr, true);
-            if (params.repos) {
-                repos.reset(params.repos.map(function (repo) {
-                    var parts = repo.split("/");
-                    return new Repos.Repo({ user: parts[0], repo: parts[1] });
-                }));
-            }
+            // TODO: change-repos
+//            if (params.repos) {
+//                repos.reset(params.repos.map(function (repo) {
+//                    var parts = repo.split("/");
+//                    return new Repos.Repo({ user: parts[0], repo: parts[1] });
+//                }));
+//            }
             query = createQueryModel(params);
         } else {
             query = makeDefaultQuery();
@@ -234,7 +236,7 @@ define(function (require, exports, module) {
             updateQueryFromURL();
         });
         
-        $("#repos-view").append(new Repos.ReposView({collection: repos}).render().el);
+        // $("#repos-view").append(new Repos.ReposView({collection: repos}).render().el);
         
         updateQueryFromURL();
         Queries.FocusManager.refreshFocus();
@@ -244,9 +246,11 @@ define(function (require, exports, module) {
     function init() {
         Suggestions.setRepos(repos);
         
+        // TODO: change-repos
         // Add an empty repo so the user can set which repo to search.
-        // TODO: save in URL
-        repos.add(new Repos.Repo());
+        // repos.add(new Repos.Repo());
+        repos.add(new Repos.Repo({user: "adobe", repo: "brackets"}));
+        repos.add(new Repos.Repo({user: "adobe", repo: "brackets-shell"}));        
         
         // Turn off login for now. Don't need it for searching public repos.
         login();
