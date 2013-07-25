@@ -28,7 +28,7 @@
             </a>
             <div class="page-header">
                 <h1>repoman</h1>
-                <h5 class="subtitle">a better way to search <a href="https://github.com">github</a> issues</h5>
+                <h5 class="subtitle">A better way to search <a href="https://github.com">GitHub</a> issues.</h5>
             </div>
             
 <!--            
@@ -56,8 +56,10 @@
 -->
             
             <div id="issues-page">
+                <!--TODO: change-repos-->
+                <!--<div id="repos-view" class="clearfix"></div>-->
                 <div class="query-container clearfix">
-                    <div class="query-refresh"><img title="Refresh issues from GitHub" src="images/Refresh32.png"></div>
+                    <div class="query-refresh" title="Refresh issues from GitHub"></div>
                     <div id="query-view" class="clearfix"></div>
                 </div>
                 <div id="issues-container"></div>
@@ -92,11 +94,18 @@
         
         <script id="t-query-leaf" type="text/x-handlebars-template">
             <div class="query-leaf-label clearfix">{{label}}</div>
-            <div class="query-leaf-value clearfix mode-view">
+            <div class="editable-item clearfix">
                 {{#if complete}}
-                     <div class="query-delete clearfix"></div>
+                     <div class="delete"></div>
                 {{/if}}
-                <div class="query-value clearfix">{{value}}</div>
+                <div class="editable-value">{{value}}</div>
+            </div>
+        </script>
+        
+        <script id="t-repo" type="text/x-handlebars-template">
+            <div class="editable-item clearfix">
+                <div class="delete"></div>
+                <div class="editable-value">{{value}}</div>
             </div>
         </script>
     </body>
