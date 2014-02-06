@@ -250,7 +250,6 @@ define(function (require, exports, module) {
         // Add an empty repo so the user can set which repo to search.
         // repos.add(new Repos.Repo());
         repos.add(new Repos.Repo({user: "adobe", repo: "brackets"}));
-        repos.add(new Repos.Repo({user: "adobe", repo: "brackets-shell"}));        
         
         // Turn off login for now. Don't need it for searching public repos.
         login();
