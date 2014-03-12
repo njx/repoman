@@ -21,8 +21,8 @@ and client_secret.
 
 The config.json API may also contain:
 * hostname - name of the host we're running on
-* securePort - port to listen on for https
-* redirectPort - http port to redirect to securePort from
+* securePort - port to listen on for https, or null to only listen on http
+* insecurePort - http port to redirect to securePort from, or port to listen on if securePort is null
 
 Note that we always redirect from http to the default https port (not securePort), so
 the redirect won't work on your localhost; if testing locally, you should just hit

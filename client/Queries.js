@@ -44,7 +44,7 @@ define(function (require, exports, module) {
                 desired = undefined;
             }
             if (actual === null || actual === undefined) {
-                return actual === desired;
+                return (desired === null || desired === undefined);
             } else if (desired === null || desired === undefined) {
                 return false;
             } else {
@@ -239,8 +239,6 @@ define(function (require, exports, module) {
                     parts[0] += ".title";
                 } else if (parts[0] === "assignee" || parts[0] === "user") {
                     parts[0] += ".login";
-                } else if (parts[0] === "pull_request") {
-                    parts[0] += ".html_url";
                 }
                 
                 var attrs = {

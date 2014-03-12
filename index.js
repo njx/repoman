@@ -24,10 +24,8 @@
     }
     
     config.hostname = config.hostname || "localhost";
-    config.redirectPort = config.redirectPort || 8000;
-    config.securePort = config.securePort || 8080;
     
-    https.createServer(serverOptions, function (request, response) {
+    function handleReq(request, response) {
         var matches = /^\/api(\/.*)$/.exec(request.url);
         if (matches && matches[1]) {
             request.headers.host = GITHUB_API;
@@ -63,7 +61,7 @@
                 pathname = "/index.html";
             }
             pathname = "client" + pathname;
-            
+
             var content;
             try {
                 content = fs.readFileSync(pathname);
@@ -71,22 +69,30 @@
                 response.writeHead(404);
                 response.end();
             }
-    
+
             if (content !== undefined) {
                 response.writeHead(200, {"Content-Type": mime.lookup(pathname)});
                 response.write(content);
                 response.end();
             }
         }
-    }).listen(config.securePort);
+    }
     
-    // Redirect HTTP to HTTPS
-    http.createServer(function (req, res) {
-        res.writeHead(301, {
-            'Content-Type': 'text/plain',
-            'Location': 'https://' + config.hostname + req.url
-        });
-        res.end('Redirecting to SSL\n');
-    }).listen(config.redirectPort);
+    if (config.securePort) {
+        console.log("listening on https://" + config.hostname + ":" + config.securePort);
+        https.createServer(serverOptions, handleReq).listen(config.securePort);
+    
+        // Redirect HTTP to HTTPS
+        http.createServer(function (req, res) {
+            res.writeHead(301, {
+                'Content-Type': 'text/plain',
+                'Location': 'https://' + config.hostname + req.url
+            });
+            res.end('Redirecting to SSL\n');
+        }).listen(config.insecurePort);
+    } else {
+        console.log("listening on http://" + config.hostname + ":" + config.insecurePort);
+        http.createServer(handleReq).listen(config.insecurePort);
+    }
 
 }());
