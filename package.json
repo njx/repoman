@@ -1,6 +1,6 @@
 {
     "name": "repoman",
-    "version": "0.1.0-7",
+    "version": "0.1.0-8",
     "description": "Query interface to GitHub issues",
     "author": "Narciso Jaramillo <nopqrs@gmail.com>",
     "scripts": {
