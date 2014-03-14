@@ -29,6 +29,7 @@
         var matches = /^\/api(\/.*)$/.exec(request.url);
         if (matches && matches[1]) {
             request.headers.host = GITHUB_API;
+            request.headers.accept = "application/vnd.github.v3+json";
             var reqOptions = {
                 host: GITHUB_API,
                 path: matches[1],
