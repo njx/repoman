@@ -63,8 +63,9 @@ define(function (require, exports, module) {
         }
     }
     
-    function addLabelColors(issue) {
-        var labels = issue.get("labels");
+    function addTemplateFields(issue) {
+        var labels = issue.get("labels"),
+            createdAt = issue.get("created_at");
         if (labels) {
             labels.forEach(function (label) {
                 if (label.color) {
@@ -73,6 +74,7 @@ define(function (require, exports, module) {
             });
             issue.set("labels", labels);
         }
+        issue.set("date", new Date(Date.parse(createdAt)).toDateString());
         return issue;
     }
     
@@ -105,7 +107,7 @@ define(function (require, exports, module) {
                     $("#issues-container").append(issuesTemplate(
                         {
                             repo: repo.getFullName(),
-                            issues: _.map(issues, function (issue) { return addLabelColors(issue).toJSON(); }),
+                            issues: _.map(issues, function (issue) { return addTemplateFields(issue).toJSON(); }),
                             numIssues: issues.length
                         }
                     ));
